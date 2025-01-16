@@ -1,29 +1,23 @@
-import React from 'react';
-
-const roomData = [
-  {
-    roomId: "101",
-    roomNo: "101",
-    roomFloor: "1st",
-    roomType: "Single",
-    price: 100,
-    roomStatus: "Vacant",
-  },
-  {
-    roomId: "102",
-    roomNo: "102",
-    roomFloor: "1st",
-    roomType: "Double",
-    price: 150,
-    roomStatus: "Occupied",
-  }
-];
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllRooms } from '../../Slices/roomSlice.js';
 
 const AdminViewRoom = () => {
+  const dispatch = useDispatch();
+  const { rooms, isLoading, error } = useSelector((state) => state.room);
+
+  useEffect(() => {
+    dispatch(getAllRooms());
+  }, [dispatch]);
+
   return (
-    <>
-      <div className="p-4 sm:ml-64">
-        <div className="overflow-x-auto">
+    <div className="p-4 sm:ml-64">
+      <div className="overflow-x-auto">
+        {isLoading ? (
+          <p>Loading rooms...</p>
+        ) : error ? (
+          <p>Error: {error}</p>
+        ) : (
           <table className="min-w-full bg-white border border-gray-300 rounded-md shadow-md">
             <thead className="bg-gray-200">
               <tr>
@@ -37,9 +31,9 @@ const AdminViewRoom = () => {
               </tr>
             </thead>
             <tbody>
-              {roomData.map((room, index) => (
-                <tr key={room.roomId} className={`bg-white ${index % 2 === 0 ? 'bg-gray-50' : 'bg-gray-100'}`}>
-                  <td className="p-4 border border-gray-300">{room.roomId}</td>
+              {rooms.map((room, index) => (
+                <tr key={room._id} className={`bg-white ${index % 2 === 0 ? 'bg-gray-50' : 'bg-gray-100'}`}>
+                  <td className="p-4 border border-gray-300">{room._id}</td>
                   <td className="p-4 border border-gray-300">{room.roomNo}</td>
                   <td className="p-4 border border-gray-300">{room.roomFloor}</td>
                   <td className="p-4 border border-gray-300">{room.roomType}</td>
@@ -53,9 +47,9 @@ const AdminViewRoom = () => {
               ))}
             </tbody>
           </table>
-        </div>
+        )}
       </div>
-    </>
+    </div>
   );
 };
 
