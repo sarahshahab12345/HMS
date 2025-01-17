@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import AdminLayout from './Components/Layout/AdminLayout';
+import AdminLayout from './Components/Layout/Admin/AdminLayout';
 import CheckAuth from './Common/checkAuth';
 import AdminViewDashboard from './Pages/admin-view/AdminViewDashboard';
 import AdminViewStaff from './Pages/admin-view/AdminViewStaff';
@@ -12,6 +12,7 @@ import AdminViewInvoice from './Pages/admin-view/AdminViewInvoice';
 import StaffCreatePage from './Pages/admin-view/StaffCreatePage';
 import RoomCreatePage from './Pages/admin-view/RoomCreatePage';  
 import LoginForm from './Components/Auth/LoginForm';
+import GuestCreatePage from './Pages/admin-view/GuestCreatePage';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <Route path="invoice" element={<AdminViewInvoice />} />
           <Route path="staff/add" element={<StaffCreatePage />} />   
           <Route path="room/add" element={<RoomCreatePage />} />   
+          <Route path="guest/add" element={<GuestCreatePage />} />   
         </Route>
         <Route path="/admin/login" element={<LoginForm />} />   
       </Routes>

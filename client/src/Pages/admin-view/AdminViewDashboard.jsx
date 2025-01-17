@@ -7,7 +7,7 @@ import rating from "../../../public/rating.png";
 import roomAvailable from "../../../public/roomAvailable.png";
 import staff from "../../../public/staff.png";
 import totalroom from "../../../public/totalroom.png";
-import DashboardGraph from "../../Components/Layout/DashboardGraph";
+import DashboardGraph from "../../Components/Layout/Admin/DashboardGraph";
 
 const AdminViewDashboard = () => {
   return (

@@ -1,6 +1,6 @@
 import React from "react";
-import Sidebar from "./sidebar";
-import MainContent from "./MainContent";
+import Sidebar from "../Admin/sidebar";
+import MainContent from "../Admin/mainContent";
 import { Link } from "react-router-dom";
 
 const AdminLayout = () => {
@@ -22,6 +22,11 @@ const AdminLayout = () => {
               <li>
                 <button className="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded mr-2">
                   <Link to="/admin/room/add">Create Room</Link>
+                </button>
+              </li>
+              <li>
+                <button className="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded mr-2">
+                  <Link to="/admin/guest/add">Create Guest</Link>
                 </button>
               </li>
               <li>

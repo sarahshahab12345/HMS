@@ -1,17 +1,29 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllStaff } from "../../Slices/staffSlice.js";
 import { AiOutlineEdit, AiOutlineDelete, AiOutlineFile } from "react-icons/ai";
+import StaffDetailsDialog from './Details/StaffDetailsDialog.jsx'; 
 
 const AdminViewStaff = () => {
   const dispatch = useDispatch();
-  const { staffMembers, isLoading, error } = useSelector(
-    (state) => state.staff
-  );
+  const { staffMembers, isLoading, error } = useSelector((state) => state.staff);
 
   useEffect(() => {
     dispatch(getAllStaff());
   }, [dispatch]);
+
+  const [selectedStaff, setSelectedStaff] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  const handleOpenDialog = (staff) => {
+    setSelectedStaff(staff);
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setSelectedStaff(null);
+    setDialogOpen(false);
+  };
 
   return (
     <div className="p-4 sm:ml-64">
@@ -20,7 +32,7 @@ const AdminViewStaff = () => {
         <h2 className="italic text-center text-2xl mb-4 text-gray-700">
           Staff Management
         </h2>
-        
+
         <div className="overflow-x-auto">
           {isLoading ? (
             <p>Loading staff members...</p>
@@ -66,7 +78,10 @@ const AdminViewStaff = () => {
                       <button className="flex items-center text-red-500 border-2 border-red-500 px-1 py-1 rounded hover:bg-red-500 hover:text-white">
                         <AiOutlineDelete className="mr-1" />
                       </button>
-                      <button className="flex items-center text-green-500 border-2 border-green-500 px-1 py-1 rounded hover:bg-green-500 hover:text-white">
+                      <button
+                        className="flex items-center text-green-500 border-2 border-green-500 px-1 py-1 rounded hover:bg-green-500 hover:text-white"
+                        onClick={() => handleOpenDialog(staff)}
+                      >
                         <AiOutlineFile className="mr-1" />
                       </button>
                     </td>
@@ -77,6 +92,15 @@ const AdminViewStaff = () => {
           )}
         </div>
       </div>
+
+      {/* Dialog Component */}
+      {selectedStaff && (
+        <StaffDetailsDialog
+          open={dialogOpen}
+          staff={selectedStaff}
+          onClose={handleCloseDialog}
+        />
+      )}
     </div>
   );
 };
