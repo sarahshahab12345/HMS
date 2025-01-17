@@ -8,6 +8,8 @@ import AdminViewRoom from '../../Pages/admin-view/AdminViewRoom';
 import AdminViewFeedback from '../../Pages/admin-view/AdminViewFeedback';
 import AdminViewBilling from '../../Pages/admin-view/AdminViewBilling';
 import AdminViewInvoice from '../../Pages/admin-view/AdminViewInvoice';
+import StaffCreatePage from '../../Pages/admin-view/StaffCreatePage';
+import RoomCreatePage from '../../Pages/admin-view/RoomCreatePage';   
 
 const MainContent = () => {
   const location = useLocation();
@@ -34,6 +36,12 @@ const MainContent = () => {
       break;
     case '/admin/invoice':
       content = <AdminViewInvoice />;
+      break;
+    case '/admin/staff/add':
+      content = <StaffCreatePage />; 
+      break;
+    case '/admin/room/add':
+      content = <RoomCreatePage />;   
       break;
     default:
       content = <AdminViewDashboard />;

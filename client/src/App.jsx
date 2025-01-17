@@ -9,6 +9,8 @@ import AdminViewRoom from './Pages/admin-view/AdminViewRoom';
 import AdminViewFeedback from './Pages/admin-view/AdminViewFeedback';
 import AdminViewBilling from './Pages/admin-view/AdminViewBilling';
 import AdminViewInvoice from './Pages/admin-view/AdminViewInvoice';
+import StaffCreatePage from './Pages/admin-view/StaffCreatePage';
+import RoomCreatePage from './Pages/admin-view/RoomCreatePage';  
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
           <Route path="feedback" element={<AdminViewFeedback />} />
           <Route path="billing" element={<AdminViewBilling />} />
           <Route path="invoice" element={<AdminViewInvoice />} />
+          <Route path="staff/add" element={<StaffCreatePage />} />   
+          <Route path="room/add" element={<RoomCreatePage />} />   
         </Route>
       </Routes>
     </Router>
