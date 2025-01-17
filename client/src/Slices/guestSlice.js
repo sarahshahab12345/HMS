@@ -20,7 +20,7 @@ export const getGuestById = createAsyncThunk(
   "admin/guest/getById",
   async (id) => {
     const response = await axios.get(
-      `http://localhost:5000/api/admin/guest/${id}`
+      `http://localhost:5000/api/admin/guest/get/${id}`
     );
     return response.data.data;
   }
