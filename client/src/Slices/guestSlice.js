@@ -5,6 +5,7 @@ import axios from "axios";
 const initialState = {
   isLoading: false,
   guests: [],
+  oneGuest: null,
   error: null,
 };
 
@@ -13,6 +14,17 @@ export const getAllGuests = createAsyncThunk("admin/guest/getAll", async () => {
   const response = await axios.get("http://localhost:5000/api/admin/guest/all");
   return response.data.data.guests;
 });
+
+// Get Guest by ID
+export const getGuestById = createAsyncThunk(
+  "admin/guest/getById",
+  async (id) => {
+    const response = await axios.get(
+      `http://localhost:5000/api/admin/guest/${id}`
+    );
+    return response.data.data;
+  }
+);
 
 // Add a New Guest
 export const createGuest = createAsyncThunk(
@@ -65,6 +77,20 @@ const guestSlice = createSlice({
         state.guests = action.payload;
       })
       .addCase(getAllGuests.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      })
+
+      // Handle getGuestById actions
+      .addCase(getGuestById.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(getGuestById.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.oneGuest = action.payload;
+      })
+      .addCase(getGuestById.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.error.message;
       })

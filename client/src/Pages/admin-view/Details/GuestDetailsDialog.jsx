@@ -1,9 +1,9 @@
 import React from 'react'
 
-function GuestDetailsDialog() {
+function GuestRoomDialog() {
   return (
-    <div>GuestDetailsDialog</div>
+    <div>GuestRoomDialog</div>
   )
 }
 
-export default GuestDetailsDialog
+export default GuestRoomDialog

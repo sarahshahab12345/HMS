@@ -1,28 +1,30 @@
 import React from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 
-const RoomDetailsDialog = ({ open, room, onClose }) => {
+const GuestDetailsDialog = ({ open, guest, onClose }) => {
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <DialogTitle>Room Details</DialogTitle>
+      <DialogTitle>Guest Details</DialogTitle>
       <DialogContent>
         <div className="flex flex-col space-y-2">
           <div>
-            <strong>Room No:</strong> {room.roomNo}
+            <strong>Guest ID:</strong> {guest._id}
           </div>
           <div>
-            <strong>Floor:</strong> {room.roomFloor}
+            <strong>Name:</strong> {guest.guestName}
           </div>
           <div>
-            <strong>Room Type:</strong> {room.roomType}
+            <strong>Contact No:</strong> {guest.guestContactNo}
           </div>
           <div>
-            <strong>Price:</strong> {room.price}
+            <strong>City:</strong> {guest.guestCity}
           </div>
           <div>
-            <strong>Room Status:</strong> {room.roomStatus}
+            <strong>Country:</strong> {guest.guestCountry}
           </div>
-          {/* Add any other details as needed */}
+          <div>
+            <strong>Email:</strong> {guest.guestEmail}
+          </div>
         </div>
       </DialogContent>
       <DialogActions>
@@ -34,4 +36,4 @@ const RoomDetailsDialog = ({ open, room, onClose }) => {
   );
 };
 
-export default RoomDetailsDialog;
+export default GuestDetailsDialog;

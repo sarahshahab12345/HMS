@@ -29,12 +29,17 @@ export const createStaff = createAsyncThunk(
 // Update an Existing Staff Member
 export const updateStaff = createAsyncThunk(
   "/admin/staff/update",
-  async ({ id, formData }) => {
-    const response = await axios.put(
-      `http://localhost:5000/api/admin/staff/update/${id}`,
-      formData
-    );
-    return response.data;
+  async ({ id, formData }, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/api/admin/staff/update/${id}`,
+        formData
+      );
+      return response.data; // Return the updated data
+    } catch (error) {
+      console.error("Error updating staff:", error.response?.data || error.message);
+      return rejectWithValue(error.response?.data || error.message);
+    }
   }
 );
 

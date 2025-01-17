@@ -21,6 +21,33 @@ const getAllGuests = async (req, res) => {
   }
 };
 
+// Get a Guest by ID
+const guestById = async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const guest = await Guest.findById(id);
+    if (guest) {
+      res.status(200).json({
+        success: true,
+        message: "Guest fetched successfully",
+        data: guest,
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: "Guest not found",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching guest",
+      error: error.message,
+    });
+  }
+};
+
 // Add a New Guest
 const addGuest = async (req, res) => {
   try {
@@ -99,4 +126,4 @@ const deleteGuest = async (req, res) => {
   }
 };
 
-export { getAllGuests, addGuest, updateGuest, deleteGuest };
+export { getAllGuests, guestById, addGuest, updateGuest, deleteGuest };

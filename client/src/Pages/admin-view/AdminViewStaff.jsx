@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getAllStaff } from "../../Slices/staffSlice.js";
 import { AiOutlineEdit, AiOutlineDelete, AiOutlineFile } from "react-icons/ai";
 import StaffDetailsDialog from './Details/StaffDetailsDialog.jsx'; 
+import UpdateStaffDialog from './UpdateDetails/UpdateStaffDialog.jsx'; 
+import { updateStaff } from "../../Slices/staffSlice.js";
 
 const AdminViewStaff = () => {
   const dispatch = useDispatch();
@@ -14,6 +16,7 @@ const AdminViewStaff = () => {
 
   const [selectedStaff, setSelectedStaff] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
 
   const handleOpenDialog = (staff) => {
     setSelectedStaff(staff);
@@ -24,6 +27,35 @@ const AdminViewStaff = () => {
     setSelectedStaff(null);
     setDialogOpen(false);
   };
+
+  const handleOpenUpdateDialog = (staff) => {
+    setSelectedStaff(staff);
+    setUpdateDialogOpen(true);
+  };
+
+  const handleCloseUpdateDialog = () => {
+    setSelectedStaff(null);
+    setUpdateDialogOpen(false);
+  };
+
+  const handleUpdate = (updatedStaff) => {
+    if (updatedStaff && updatedStaff._id) {
+      const { _id: id, ...formData } = updatedStaff; // Extract id and formData
+      dispatch(updateStaff({ id, formData }))
+        .unwrap()
+        .then(() => {
+          console.log("Staff updated successfully!");
+          // Fetch the updated staff list
+          dispatch(getAllStaff());
+        })
+        .catch((error) => {
+          console.error("Failed to update staff:", error);
+        });
+    } else {
+      console.error("Invalid staff data. Cannot update.");
+    }
+  };
+  
 
   return (
     <div className="p-4 sm:ml-64">
@@ -72,7 +104,7 @@ const AdminViewStaff = () => {
                       {staff.staffPassword}
                     </td>
                     <td className="p-4 border border-gray-300 flex space-x-2">
-                      <button className="flex items-center text-blue-500 px-1 border-2 border-blue-500 py-1 rounded hover:bg-blue-500 hover:text-white">
+                      <button className="flex items-center text-blue-500 px-1 border-2 border-blue-500 py-1 rounded hover:bg-blue-500 hover:text-white" onClick={() => handleOpenUpdateDialog(staff)}>
                         <AiOutlineEdit className="mr-1" />
                       </button>
                       <button className="flex items-center text-red-500 border-2 border-red-500 px-1 py-1 rounded hover:bg-red-500 hover:text-white">
@@ -99,6 +131,16 @@ const AdminViewStaff = () => {
           open={dialogOpen}
           staff={selectedStaff}
           onClose={handleCloseDialog}
+        />
+      )}
+
+      {/* Update Dialog Component */}
+      {selectedStaff && (
+        <UpdateStaffDialog
+          open={updateDialogOpen}
+          staff={selectedStaff}
+          onClose={handleCloseUpdateDialog}
+          onUpdate={handleUpdate}
         />
       )}
     </div>
