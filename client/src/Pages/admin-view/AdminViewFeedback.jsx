@@ -25,39 +25,46 @@ const AdminViewFeedback = () => {
   return (
     <>
       <div className="p-4 sm:ml-64">
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-300 rounded-md shadow-md">
-            <thead className="bg-gray-200">
-              <tr>
-                <th className="p-4 border border-gray-300">Feedback ID</th>
-                <th className="p-4 border border-gray-300">User Name</th>
-                <th className="p-4 border border-gray-300">Email</th>
-                <th className="p-4 border border-gray-300">Date</th>
-                <th className="p-4 border border-gray-300">Type</th>
-                <th className="p-4 border border-gray-300">Message</th>
-                <th className="p-4 border border-gray-300">Status</th>
-                <th className="p-4 border border-gray-300">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {feedbackData.map((feedback, index) => (
-                <tr key={feedback.feedbackId} className={`bg-white ${index % 2 === 0 ? 'bg-gray-50' : 'bg-gray-100'}`}>
-                  <td className="p-4 border border-gray-300">{feedback.feedbackId}</td>
-                  <td className="p-4 border border-gray-300">{feedback.userName}</td>
-                  <td className="p-4 border border-gray-300">{feedback.userEmail}</td>
-                  <td className="p-4 border border-gray-300">{new Date(feedback.feedbackDate).toLocaleDateString()}</td>
-                  <td className="p-4 border border-gray-300">{feedback.feedbackType}</td>
-                  <td className="p-4 border border-gray-300">{feedback.feedbackMessage}</td>
-                  <td className="p-4 border border-gray-300">{feedback.feedbackStatus}</td>
-                  <td className="p-4 border border-gray-300 flex space-x-2">
-                    <button className="bg-green-500 text-white px-2 py-1 rounded">Mark as Resolved</button>
-                    <button className="bg-yellow-500 text-white px-2 py-1 rounded">Assign</button>
-                    <button className="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
-                  </td>
+        <div className="flex flex-col items-center">
+          {/* Heading before the table */}
+          <h2 className="italic text-center text-2xl mb-4 text-gray-700">
+            Feedback Management
+          </h2>
+          
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border border-gray-300 rounded-md shadow-md">
+              <thead className="bg-gray-200">
+                <tr>
+                  <th className="p-4 border border-gray-300">Feedback ID</th>
+                  <th className="p-4 border border-gray-300">User Name</th>
+                  <th className="p-4 border border-gray-300">Email</th>
+                  <th className="p-4 border border-gray-300">Date</th>
+                  <th className="p-4 border border-gray-300">Type</th>
+                  <th className="p-4 border border-gray-300">Message</th>
+                  <th className="p-4 border border-gray-300">Status</th>
+                  <th className="p-4 border border-gray-300">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {feedbackData.map((feedback, index) => (
+                  <tr key={feedback.feedbackId} className={`bg-white ${index % 2 === 0 ? 'bg-gray-50' : 'bg-gray-100'}`}>
+                    <td className="p-4 border border-gray-300">{feedback.feedbackId}</td>
+                    <td className="p-4 border border-gray-300">{feedback.userName}</td>
+                    <td className="p-4 border border-gray-300">{feedback.userEmail}</td>
+                    <td className="p-4 border border-gray-300">{new Date(feedback.feedbackDate).toLocaleDateString()}</td>
+                    <td className="p-4 border border-gray-300">{feedback.feedbackType}</td>
+                    <td className="p-4 border border-gray-300">{feedback.feedbackMessage}</td>
+                    <td className="p-4 border border-gray-300">{feedback.feedbackStatus}</td>
+                    <td className="p-4 border border-gray-300 flex space-x-2">
+                      <button className="bg-green-500 text-white px-2 py-1 rounded">Mark as Resolved</button>
+                      <button className="bg-yellow-500 text-white px-2 py-1 rounded">Assign</button>
+                      <button className="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </>

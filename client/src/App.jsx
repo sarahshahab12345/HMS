@@ -11,6 +11,7 @@ import AdminViewBilling from './Pages/admin-view/AdminViewBilling';
 import AdminViewInvoice from './Pages/admin-view/AdminViewInvoice';
 import StaffCreatePage from './Pages/admin-view/StaffCreatePage';
 import RoomCreatePage from './Pages/admin-view/RoomCreatePage';  
+import LoginForm from './Components/Auth/LoginForm';
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
           <Route path="staff/add" element={<StaffCreatePage />} />   
           <Route path="room/add" element={<RoomCreatePage />} />   
         </Route>
+        <Route path="/admin/login" element={<LoginForm />} />   
       </Routes>
     </Router>
   );

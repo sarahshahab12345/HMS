@@ -9,11 +9,13 @@ import UserAuthRouter from "./Routes/Admin/User-Auth-Routes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
+// Connect to the database
 connectToDb();
-const app = express();
 
+const app = express();
 const port = process.env.PORT || 5002;
 
+// Middleware setup
 app.use(cookieParser());
 app.use(
   cors({
@@ -26,15 +28,18 @@ app.use(
       "Expires",
       "Pragma",
     ],
-    credentials: true, 
+    credentials: true,
   })
 );
 app.use(express.json());
+
+// Routes
 app.use("/api/admin/guest", GuestRouter);
 app.use("/api/admin/staff", StaffRouter);
 app.use("/api/admin/room", RoomRouter);
 app.use("/api/auth", UserAuthRouter);
 
+// Start server
 app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-  });
+  console.log(`Server is running on port ${port}`);
+});

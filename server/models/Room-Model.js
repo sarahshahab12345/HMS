@@ -10,7 +10,7 @@ const roomSchema = mongoose.Schema(
     roomStatus: String, // Example: Cleaning, Occupied, Vacant, Maintenance
   },
   {
-    timestamps: true, // Automatically add createdAt and updatedAt fields
+    timestamps: true, 
   }
 );
 
