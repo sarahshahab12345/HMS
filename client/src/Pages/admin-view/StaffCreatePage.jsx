@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createStaff } from "../../Slices/staffSlice.js";
+import axios from "axios";
 
 function StaffCreatePage() {
   const dispatch = useDispatch();
@@ -15,14 +16,49 @@ function StaffCreatePage() {
     staffGender: "",
     staffEmail: "",
     staffPassword: "",
+    staffPicture: "", // new field for image URL
   });
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const [imageFile, setImageFile] = useState({});
+  const [isImageLoading, setIsImageLoading] = useState(false);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState("");
+
+  const inputRef = React.createRef(null);
+
+  const handleImageFileChange = (e) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      setImageFile(selectedFile);
+    }
   };
 
-  const handleSubmit = (e) => {
+  const uploadImage = async () => {
+    try {
+      setIsImageLoading(true);
+      const data = new FormData();
+      data.append("file", imageFile);
+      const response = await axios.post(
+        "http://localhost:5000/staff/upload-image",
+        data
+      );
+      if (response.status === 200) {
+        setUploadedImageUrl(response?.data?.result?.url);
+        return response?.data?.result?.url;
+      }
+    } catch (error) {
+      console.log(error);
+      return null;
+    } finally {
+      setIsImageLoading(false);
+    }
+  };
+
+  const handleOnSubmit = async (e) => {
     e.preventDefault();
+    const imageUrl = await uploadImage();
+    if (imageUrl) {
+      setFormData({ ...formData, staffPicture: imageUrl });
+    }
     dispatch(createStaff(formData));
     setFormData({
       staffName: "",
@@ -35,14 +71,20 @@ function StaffCreatePage() {
       staffGender: "",
       staffEmail: "",
       staffPassword: "",
+      staffPicture: "",
     });
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
     <div className="p-10 sm:ml-64">
       <div className="max-w-5xl mx-auto p-10 bg-white rounded-lg">
         <h2 className="text-3xl font-bold mb-8 text-gray-800">Create Staff</h2>
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleOnSubmit} className="space-y-6">
+          {/* Other form fields unchanged */}
           <div className="grid md:grid-cols-2 gap-6">
             <div className="flex flex-col">
               <label htmlFor="staffName" className="text-gray-700 text-lg">
@@ -98,10 +140,10 @@ function StaffCreatePage() {
                 </option>
                 <option value="manager">Manager</option>
                 <option value="receptionist">Receptionist</option>
-                <option value="housekeeping">housekeeping</option>
+                <option value="housekeeping">Housekeeping</option>
+                <option value="other">Other</option>
               </select>
             </div>
-
             <div className="flex flex-col">
               <label htmlFor="staffAddress" className="text-gray-700 text-lg">
                 Address
@@ -184,6 +226,20 @@ function StaffCreatePage() {
                 placeholder="Password"
                 className="border p-3 rounded mt-1 shadow-lg"
               />
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="image" className="text-gray-700 text-lg">
+                Staff Picture
+              </label>
+              <input
+                id="image"
+                type="file"
+                name="staffPicture"
+                onChange={handleImageFileChange}
+                ref={inputRef}
+                className="w-full px-3 py-2 border rounded"
+              />
+              {isImageLoading && <p>Uploading...</p>}
             </div>
           </div>
           <button

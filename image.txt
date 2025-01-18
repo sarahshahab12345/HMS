@@ -1,0 +1,53 @@
+const [imageFile, setImageFile] = useState({});
+const [isImageLoading, setIsIamgeLoading] = useState(false);
+const [uploadedImageUrl, setUploadedImageUrl] = useState("");
+
+const inputRef = createRef(null);
+
+  const handleImageFileChange = (e) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      setImageFile(selectedFile);
+    }
+  };
+
+
+
+const uploadImage = async () => {
+    try {
+      setIsIamgeLoading(true);
+      const data = new FormData();
+      data.append("file", imageFile);
+      const response = await axios.post(
+        "http://localhost:5000/staff/upload-image",
+        data
+      );
+      if (response.status === 200) {
+        setUploadedImageUrl(response?.data?.result?.url);
+        return response?.data?.result?.url; // return the URL
+      }
+    } catch (error) {
+      console.log(error);
+      return null; // return null in case of an error
+    } finally {
+      setIsIamgeLoading(false);
+    }
+  };
+
+
+const handleOnSubmit = async () => {
+const imageUrl = await uploadImage(); 
+if (imageUrl) {
+        formData.staffPicture = imageUrl;
+dispatch(your method name)
+}
+}
+
+<input
+                      id="image"
+                      type="file"
+                      name="staffPicture"
+                      onChange={handleImageFileChange}
+                      ref={inputRef}
+                      className="w-full px-3 py-2 border rounded"
+                    />

@@ -1,31 +1,35 @@
-import React from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import React from "react";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
 
-const GuestDetailsDialog = ({ open, guest, onClose }) => {
+const RoomDetailsDialog = ({ open, room, onClose }) => {
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <DialogTitle>Guest Details</DialogTitle>
+      <DialogTitle>Room Details</DialogTitle>
       <DialogContent>
-        <div className="flex flex-col space-y-2">
-          <div>
-            <strong>Guest ID:</strong> {guest._id}
+        {room ? (
+          <div className="flex flex-col space-y-2">
+            <div>
+              <strong>Room ID:</strong> {room.roomId || "N/A"}
+            </div>
+            <div>
+              <strong>Room Number:</strong> {room.roomNo || "N/A"}
+            </div>
+            <div>
+              <strong>Floor:</strong> {room.roomFloor || "N/A"}
+            </div>
+            <div>
+              <strong>Type:</strong> {room.roomType || "N/A"}
+            </div>
+            <div>
+              <strong>Price:</strong> {room.price ? `$${room.price}` : "N/A"}
+            </div>
+            <div>
+              <strong>Status:</strong> {room.roomStatus || "N/A"}
+            </div>
           </div>
-          <div>
-            <strong>Name:</strong> {guest.guestName}
-          </div>
-          <div>
-            <strong>Contact No:</strong> {guest.guestContactNo}
-          </div>
-          <div>
-            <strong>City:</strong> {guest.guestCity}
-          </div>
-          <div>
-            <strong>Country:</strong> {guest.guestCountry}
-          </div>
-          <div>
-            <strong>Email:</strong> {guest.guestEmail}
-          </div>
-        </div>
+        ) : (
+          <div>No room details available.</div>
+        )}
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose} color="primary">
@@ -36,4 +40,4 @@ const GuestDetailsDialog = ({ open, guest, onClose }) => {
   );
 };
 
-export default GuestDetailsDialog;
+export default RoomDetailsDialog;

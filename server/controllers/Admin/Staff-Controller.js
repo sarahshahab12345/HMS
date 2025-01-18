@@ -24,6 +24,7 @@ const getAllStaff = async (req, res) => {
 // Add a New Staff Member
 const addStaff = async (req, res) => {
   try {
+    
     const staffData = req.body;
     const newStaff = await Staff.create(staffData);
     res.status(201).json({

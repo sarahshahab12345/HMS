@@ -1,26 +1,19 @@
 import mongoose from "mongoose";
 
-const staffSchema = mongoose.Schema(
-  {
-    staffId: String,
-    staffName: String,
-    staffNicNo: String,
-    staffContactNo: String,
-    staffNicPicture: String, // Store URL or path to the NIC picture
-    staffRole: String, // Example: manager, receptionist, housekeeping
-    staffAddress: String,
-    staffCity: String,
-    staffCountry: String,
-    staffGender: String, // Example: male, female, other
-    staffPicture: String, // Store URL or path to the profile picture
-    staffEmail: String,
-    staffPassword: String,
-  },
-  {
-    timestamps: true, // Automatically add createdAt and updatedAt fields
-  }
-);
+const staffSchema = new mongoose.Schema({
+  staffId: { type: String, required: true },
+  staffName: { type: String, required: true },
+  staffNicNo: { type: String, required: true },
+  staffContactNo: { type: String, required: true },
+  staffRole: { type: String, required: true },
+  staffAddress: { type: String, required: true },
+  staffCity: { type: String, required: true },
+  staffCountry: { type: String, required: true },
+  staffGender: { type: String, required: true },
+  staffPicture: { type: String, required: true },
+  staffEmail: { type: String, required: true },
+  staffPassword: { type: String, required: true },
+});
 
 const Staff = mongoose.model("Staff", staffSchema);
-
 export default Staff;

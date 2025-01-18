@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllRooms } from "../../Slices/roomSlice.js";
+import { getAllRooms, deleteRoom } from "../../Slices/roomSlice.js";
 import { AiOutlineEdit, AiOutlineDelete, AiOutlineFile } from "react-icons/ai";
-import RoomDetailsDialog from './Details/RoomDetailsDialog.jsx'; 
+import RoomDetailsDialog from './Details/RoomDetailsDialog.jsx';
 
 const AdminViewRoom = () => {
   const dispatch = useDispatch();
@@ -23,6 +23,16 @@ const AdminViewRoom = () => {
   const handleCloseDialog = () => {
     setSelectedRoom(null);
     setDialogOpen(false);
+  };
+
+  const handleDeleteRoom = (id) => {
+    dispatch(deleteRoom(id)).then(() => {
+      alert("Room deleted successfully");
+    })
+    .catch((error) => {
+      console.error("Failed to delete room:", error);
+      alert("Failed to delete room");
+    });
   };
 
   return (
@@ -68,7 +78,10 @@ const AdminViewRoom = () => {
                       <button className="flex items-center text-blue-500 px-1 border-2 border-blue-500 py-1 rounded hover:bg-blue-500 hover:text-white">
                         <AiOutlineEdit className="mr-1" />
                       </button>
-                      <button className="flex items-center text-red-500 border-2 border-red-500 px-1 py-1 rounded hover:bg-red-500 hover:text-white">
+                      <button
+                        className="flex items-center text-red-500 border-2 border-red-500 px-1 py-1 rounded hover:bg-red-500 hover:text-white"
+                        onClick={() => handleDeleteRoom(room._id)}
+                      >
                         <AiOutlineDelete className="mr-1" />
                       </button>
                       <button
