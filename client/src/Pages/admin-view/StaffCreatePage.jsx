@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createStaff } from "../../Slices/staffSlice.js";
-import axios from "axios";
 
 function StaffCreatePage() {
   const dispatch = useDispatch();
@@ -16,49 +15,14 @@ function StaffCreatePage() {
     staffGender: "",
     staffEmail: "",
     staffPassword: "",
-    staffPicture: "", // new field for image URL
   });
 
-  const [imageFile, setImageFile] = useState({});
-  const [isImageLoading, setIsImageLoading] = useState(false);
-  const [uploadedImageUrl, setUploadedImageUrl] = useState("");
-
-  const inputRef = React.createRef(null);
-
-  const handleImageFileChange = (e) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      setImageFile(selectedFile);
-    }
-  };
-
-  const uploadImage = async () => {
-    try {
-      setIsImageLoading(true);
-      const data = new FormData();
-      data.append("file", imageFile);
-      const response = await axios.post(
-        "http://localhost:5000/staff/upload-image",
-        data
-      );
-      if (response.status === 200) {
-        setUploadedImageUrl(response?.data?.result?.url);
-        return response?.data?.result?.url;
-      }
-    } catch (error) {
-      console.log(error);
-      return null;
-    } finally {
-      setIsImageLoading(false);
-    }
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleOnSubmit = async (e) => {
     e.preventDefault();
-    const imageUrl = await uploadImage();
-    if (imageUrl) {
-      setFormData({ ...formData, staffPicture: imageUrl });
-    }
     dispatch(createStaff(formData));
     setFormData({
       staffName: "",
@@ -71,12 +35,7 @@ function StaffCreatePage() {
       staffGender: "",
       staffEmail: "",
       staffPassword: "",
-      staffPicture: "",
     });
-  };
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
@@ -226,20 +185,6 @@ function StaffCreatePage() {
                 placeholder="Password"
                 className="border p-3 rounded mt-1 shadow-lg"
               />
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="image" className="text-gray-700 text-lg">
-                Staff Picture
-              </label>
-              <input
-                id="image"
-                type="file"
-                name="staffPicture"
-                onChange={handleImageFileChange}
-                ref={inputRef}
-                className="w-full px-3 py-2 border rounded"
-              />
-              {isImageLoading && <p>Uploading...</p>}
             </div>
           </div>
           <button

@@ -40,18 +40,19 @@ const MainContent = () => {
       content = <AdminViewInvoice />;
       break;
     case '/admin/staff/add':
-      content = <StaffCreatePage />; 
+      content = <StaffCreatePage />;
       break;
     case '/admin/guest/add':
-      content = <GuestCreatePage />; 
+      content = <GuestCreatePage />;
       break;
     case '/admin/room/add':
-      content = <RoomCreatePage />;   
+      content = <RoomCreatePage />;
       break;
     case '/admin/login':
-      content = <LoginForm />;   
+      content = <LoginForm />;
       break;
     default:
+      // Redirect to a 'Not Found' or Dashboard as fallback
       content = <AdminViewDashboard />;
   }
 
