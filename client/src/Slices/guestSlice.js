@@ -28,36 +28,48 @@ export const getGuestById = createAsyncThunk(
 
 // Add a New Guest
 export const createGuest = createAsyncThunk(
-  "/admin/guests/create",
-  async (formData) => {
-    const response = await axios.post(
-      "http://localhost:5000/api/admin/guest/create",
-      formData
-    );
-    return response.data;
+  "admin/guests/create",
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/admin/guest/create",
+        formData
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Something went wrong");
+    }
   }
 );
 
 // Update an Existing Guest
 export const updateGuest = createAsyncThunk(
-  "/admin/guests/update",
-  async ({ id, formData }) => {
-    const response = await axios.put(
-      `http://localhost:5000/api/admin/guest/update/${id}`,
-      formData
-    );
-    return response.data;
+  "admin/guests/update",
+  async ({ id, formData }, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/api/admin/guest/update/${id}`,
+        formData
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Something went wrong");
+    }
   }
 );
 
 // Delete a Guest
 export const deleteGuest = createAsyncThunk(
-  "/admin/guests/delete",
-  async (id) => {
-    const response = await axios.delete(
-      `http://localhost:5000/api/admin/guest/delete/${id}`
-    );
-    return response.data;
+  "admin/guests/delete",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:5000/api/admin/guest/delete/${id}`
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Something went wrong");
+    }
   }
 );
 
@@ -106,7 +118,7 @@ const guestSlice = createSlice({
       })
       .addCase(createGuest.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message;
+        state.error = action.payload || "Failed to create guest";
       })
 
       // Handle updateGuest actions

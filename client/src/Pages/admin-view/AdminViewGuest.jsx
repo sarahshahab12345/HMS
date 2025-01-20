@@ -24,6 +24,11 @@ const AdminViewGuests = () => {
     setSelectedGuest(null);
   };
 
+  const handleOpenUpdateDialog = (guest) => {
+    setSelectedGuest(guest);
+    setOpenDialog(true);
+  };  
+
   // Handle Delete functionality
   const handleDelete = (guestId) => {
     dispatch(deleteGuest(guestId))
@@ -50,6 +55,7 @@ const AdminViewGuests = () => {
               <thead className="bg-gray-200">
                 <tr>
                   <th className="p-4 border border-gray-300">Guest ID</th>
+                  <th className="p-4 border border-gray-300">NIC Picture</th>
                   <th className="p-4 border border-gray-300">Name</th>
                   <th className="p-4 border border-gray-300">Contact No</th>
                   <th className="p-4 border border-gray-300">City</th>
@@ -67,6 +73,19 @@ const AdminViewGuests = () => {
                     }`}
                   >
                     <td className="p-4 border border-gray-300">{guest._id}</td>
+                    <td className="p-4 border border-gray-300">
+                      {guest.guestNicPicture ? (
+                        <img
+                          src={guest.guestNicPicture}
+                          alt="Staff"
+                          className="h-12 w-12 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="h-12 w-12 bg-gray-300 rounded-full flex items-center justify-center">
+                          <span className="text-gray-500">N/A</span>
+                        </div>
+                      )}
+                    </td>
                     <td className="p-4 border border-gray-300">{guest.guestName}</td>
                     <td className="p-4 border border-gray-300">{guest.guestContactNo}</td>
                     <td className="p-4 border border-gray-300">{guest.guestCity}</td>

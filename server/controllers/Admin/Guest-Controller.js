@@ -1,4 +1,4 @@
-import Guest from "../../models/Guest-Model.js"; // Adjust the path as necessary
+import Guest from "../../models/Guest-Model.js"; 
 
 // Get All Guests
 const getAllGuests = async (req, res) => {
@@ -59,6 +59,7 @@ const addGuest = async (req, res) => {
       data: newGuest,
     });
   } catch (error) {
+    console.error("Error adding guest:", error.message);
     res.status(500).json({
       success: false,
       message: "Error adding guest",

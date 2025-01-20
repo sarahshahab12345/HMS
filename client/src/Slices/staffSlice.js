@@ -16,13 +16,17 @@ export const getAllStaff = createAsyncThunk("/admin/staff/getAll", async () => {
 
 // Add a New Staff Member
 export const createStaff = createAsyncThunk(
-  "/admin/staff/create",
-  async (formData) => {
-    const response = await axios.post(
-      "http://localhost:5000/api/admin/staff/create",
-      formData
-    );
-    return response.data;
+  "admin/staff/create",
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/admin/staff/create",
+        formData
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Something went wrong');
+    }
   }
 );
 
@@ -75,17 +79,17 @@ const staffSlice = createSlice({
       })
 
       // Handle createStaff actions
-      .addCase(createStaff.pending, (state) => {
-        state.isLoading = true;
+        .addCase(createStaff.pending, (state) => {
+        state.loading = true;
         state.error = null;
       })
       .addCase(createStaff.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.staffMembers.push(action.payload);
+        state.loading = false;
+        state.staff = action.payload;
       })
       .addCase(createStaff.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.error.message;
+        state.loading = false;
+        state.error = action.payload || "Failed to create staff";
       })
 
       // Handle updateStaff actions

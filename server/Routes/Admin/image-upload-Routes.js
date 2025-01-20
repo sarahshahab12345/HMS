@@ -1,8 +1,11 @@
-import express from "express";
-import { upload } from "../../helpers/cloudinary.js";
+import { Router } from "express";
+import multer from "multer";
 import handleImageUpload from "../../controllers/Admin/image-upload-Controller.js";
 
-const router = express.Router();
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+
+const router = Router();
 
 router.post("/upload-image", upload.single("file"), handleImageUpload);
 

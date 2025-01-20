@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const guestSchema = mongoose.Schema({
+const guestSchema = new mongoose.Schema({
   guestId: {
     type: String,
     required: [true, "Please enter the guest ID"],
