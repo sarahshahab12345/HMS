@@ -106,10 +106,10 @@ const AdminViewGuests = () => {
                         <img
                           src={guest.guestNicPicture}
                           alt="guest"
-                          className="h-12 w-12 rounded-full object-cover"
+                          className="h-12 w-12 object-cover"
                         />
                       ) : (
-                        <div className="h-12 w-12 bg-gray-300 rounded-full flex items-center justify-center">
+                        <div className="h-12 w-12 bg-gray-300 flex items-center justify-center">
                           <span className="text-gray-500">N/A</span>
                         </div>
                       )}
