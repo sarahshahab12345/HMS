@@ -1,125 +1,249 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { updateGuest } from '../../Slices/guestSlice';
+import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { uploadImage } from "../../../Slices/image-uploadSlice.js"; 
 
-function UpdateGuestDialog({ guestId, onClose }) {
+function UpdateGuestDialog({ open, guest, onClose, onUpdate }) {
+  // State to hold updated guest data
+  const [updateGuest, setupdateGuest] = useState(guest || {});
   const dispatch = useDispatch();
-  const { guests } = useSelector((state) => state.guests);
 
-  const [guestDetails, setGuestDetails] = useState({
-    guestName: '',
-    guestContactNo: '',
-    guestCity: '',
-    guestCountry: '',
-    guestEmail: '',
-  });
+  useEffect(() => {
+    if (guest) {
+      setupdateGuest(guest);
+    }
+  }, [guest]);
 
-  const handleChange = (e) => {
+  // Handle changes to form input fields
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setGuestDetails({
-      ...guestDetails,
-      [name]: value,
-    });
+    setupdateGuest({ ...updateGuest, [name]: value });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (guestId) {
-      dispatch(updateGuest({ id: guestId, formData: guestDetails }));
-      onClose();
+  // Handle image upload
+  const handleImageChange = async (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+
+      reader.onloadend = async () => {
+        const base64Image = reader.result;
+        dispatch(uploadImage(base64Image));
+        setupdateGuest({ ...updateGuest, guestNicPicture: base64Image });
+      };
+
+      reader.readAsDataURL(file);
     }
   };
 
+  // Handle the update process
+  const handleUpdate = () => {
+    if (!updateGuest || !updateGuest.guestId) {
+      console.error("No guest selected or updateGuest is missing 'guestId'");
+      return;
+    }
+
+    const {
+      guestName,
+      guestEmail,
+      guestNicNo,
+      guestContactNo,
+      guestNicPicture,
+      guestCity,
+      guestCountry,
+      guestPassword,
+      guestGender,
+    } = updateGuest;
+
+    // Validate that all fields are filled out
+    if (
+      !guestName ||
+      !guestEmail ||
+      !guestNicNo ||
+      !guestContactNo ||
+      !guestNicPicture ||
+      !guestCity ||
+      !guestCountry ||
+      !guestPassword ||
+      !guestGender
+    ) {
+      alert("All fields must be filled out!");
+      return;
+    }
+
+    // Validate email format
+    if (!/^\S+@\S+\.\S+$/.test(guestEmail)) {
+      alert("Please provide a valid email address.");
+      return;
+    }
+
+    // Prepare payload for the update action
+    const payload = { ...updateGuest };
+    if (!payload.guestPassword) {
+      delete payload.guestPassword;
+    }
+
+    // Trigger the update callback with the prepared payload
+    onUpdate(payload);
+    onClose();
+  };
+
+  // Handle closing the dialog
+  const handleClose = () => {
+    setupdateGuest(guest);
+    onClose();
+  };
+
   return (
-    <div className="p-4 sm:ml-64">
-      <div className="flex flex-col items-center">
-        <h2 className="italic text-center text-2xl mb-4 text-gray-700">
+    <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-1/2 overflow-auto max-h-[80vh]">
+        <h3 className="text-2xl mb-4 text-gray-700 text-center">
           Update Guest Details
-        </h2>
-        <form onSubmit={handleSubmit} className="w-full max-w-md bg-white p-4 rounded shadow">
+        </h3>
+
+        <form onSubmit={handleUpdate}>
           <div className="mb-4">
-            <label htmlFor="guestName" className="block text-gray-700">
+            <label htmlFor="guestName" className="block mb-2 text-gray-600">
               Name
             </label>
             <input
               type="text"
               id="guestName"
               name="guestName"
-              value={guestDetails.guestName}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded"
+              value={updateGuest.guestName}
+              onChange={handleInputChange}
+              className="border p-2 w-full rounded"
               required
             />
           </div>
+
           <div className="mb-4">
-            <label htmlFor="guestContactNo" className="block text-gray-700">
-              Contact No
-            </label>
-            <input
-              type="text"
-              id="guestContactNo"
-              name="guestContactNo"
-              value={guestDetails.guestContactNo}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="guestCity" className="block text-gray-700">
-              City
-            </label>
-            <input
-              type="text"
-              id="guestCity"
-              name="guestCity"
-              value={guestDetails.guestCity}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="guestCountry" className="block text-gray-700">
-              Country
-            </label>
-            <input
-              type="text"
-              id="guestCountry"
-              name="guestCountry"
-              value={guestDetails.guestCountry}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="guestEmail" className="block text-gray-700">
+            <label htmlFor="guestEmail" className="block mb-2 text-gray-600">
               Email
             </label>
             <input
               type="email"
               id="guestEmail"
               name="guestEmail"
-              value={guestDetails.guestEmail}
-              onChange={handleChange}
-              className="w-full px-3 py-2 border border-gray-300 rounded"
+              value={updateGuest.guestEmail}
+              onChange={handleInputChange}
+              className="border p-2 w-full rounded"
               required
             />
           </div>
-          <div className="flex items-center justify-end space-x-4">
-            <button
-              type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+
+          <div className="mb-4">
+            <label htmlFor="guestNicNo" className="block mb-2 text-gray-600">
+              NIC Number
+            </label>
+            <input
+              type="text"
+              id="guestNicNo"
+              name="guestNicNo"
+              value={updateGuest.guestNicNo}
+              onChange={handleInputChange}
+              className="border p-2 w-full rounded"
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label
+              htmlFor="guestContactNo"
+              className="block mb-2 text-gray-600"
             >
-              Update
-            </button>
+              Contact No
+            </label>
+            <input
+              type="text"
+              id="guestContactNo"
+              name="guestContactNo"
+              value={updateGuest.guestContactNo}
+              onChange={handleInputChange}
+              className="border p-2 w-full rounded"
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="guestCity" className="block mb-2 text-gray-600">
+              City
+            </label>
+            <input
+              type="text"
+              id="guestCity"
+              name="guestCity"
+              value={updateGuest.guestCity}
+              onChange={handleInputChange}
+              className="border p-2 w-full rounded"
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="guestCountry" className="block mb-2 text-gray-600">
+              Country
+            </label>
+            <input
+              type="text"
+              id="guestCountry"
+              name="guestCountry"
+              value={updateGuest.guestCountry}
+              onChange={handleInputChange}
+              className="border p-2 w-full rounded"
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="guestPassword" className="block mb-2 text-gray-600">
+              Password
+            </label>
+            <input
+              type="password"
+              id="guestPassword"
+              name="guestPassword"
+              value={updateGuest.guestPassword}
+              onChange={handleInputChange}
+              className="border p-2 w-full rounded"
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label
+              htmlFor="guestNicPicture"
+              className="block mb-2 text-gray-600"
+            >
+              Upload NIC Picture
+            </label>
+            <input
+              type="file"
+              name="guestPicture"
+              onChange={handleImageChange}
+              className="border p-3 rounded mt-1 shadow-lg"
+            />
+            {updateGuest.guestNicPicture && (
+              <img
+                src={updateGuest.guestNicPicture}
+                alt="guest Preview"
+                className="mt-2 max-w-[150px] rounded-lg"
+              />
+            )}
+          </div>
+
+          <div className="flex justify-end space-x-2">
             <button
+              className="px-4 py-2 bg-gray-300 text-gray-700 rounded"
+              onClick={handleClose}
               type="button"
-              onClick={onClose}
-              className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
             >
               Cancel
+            </button>
+            <button
+              className="px-4 py-2 bg-gray-800 hover:bg-gray-900 text-white rounded"
+              type="submit"
+            >
+              Update
             </button>
           </div>
         </form>

@@ -1,10 +1,10 @@
 import React from 'react';
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
 
-const GuestRoomDialog = ({ open, guest, onClose }) => {
+const GuestDetailsDialog = ({ open, guest, onClose }) => {
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <DialogTitle>Guest Room Details</DialogTitle>
+      <DialogTitle>Guest Details</DialogTitle>
       <DialogContent>
         <div className="flex flex-col space-y-2">
           <div>
@@ -43,4 +43,4 @@ const GuestRoomDialog = ({ open, guest, onClose }) => {
   );
 };
 
-export default GuestRoomDialog;
+export default GuestDetailsDialog;

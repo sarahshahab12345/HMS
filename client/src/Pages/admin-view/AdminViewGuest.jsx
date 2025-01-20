@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllGuests, deleteGuest } from "../../Slices/guestSlice.js";
-import GuestRoomDialog from "./Details/GuestDetailsDialog.jsx";
+import { getAllGuests, deleteGuest, updateGuest } from "../../Slices/guestSlice.js";
 import { AiOutlineEdit, AiOutlineDelete, AiOutlineFile } from "react-icons/ai";
+import GuestDetailsDialog from "./Details/GuestDetailsDialog.jsx";
+import UpdateGuestDialog from "./UpdateDetails/UpdateGuestDialog.jsx";
 
 const AdminViewGuests = () => {
   const dispatch = useDispatch();
   const { guests, isLoading, error } = useSelector((state) => state.guests);
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedGuest, setSelectedGuest] = useState(null);
+  const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
 
   useEffect(() => {
     dispatch(getAllGuests());
@@ -25,9 +27,15 @@ const AdminViewGuests = () => {
   };
 
   const handleOpenUpdateDialog = (guest) => {
+    console.log("Opening update dialog for guest:", guest);
     setSelectedGuest(guest);
-    setOpenDialog(true);
-  };  
+    setUpdateDialogOpen(true);
+  };
+
+  const handleCloseUpdateDialog = () => {
+    setSelectedGuest(null);
+    setUpdateDialogOpen(false);
+  };
 
   // Handle Delete functionality
   const handleDelete = (guestId) => {
@@ -41,10 +49,30 @@ const AdminViewGuests = () => {
       });
   };
 
+  const handleUpdate = (updatedGuest) => {
+    if (updatedGuest && updatedGuest._id) {
+      const { _id: id, ...formData } = updatedGuest; // Extract id and formData
+      dispatch(updateGuest({ id, formData }))
+        .unwrap()
+        .then(() => {
+          console.log("Guest updated successfully!");
+          // Fetch the updated guest list
+          dispatch(getAllGuests());
+        })
+        .catch((error) => {
+          console.error("Failed to update Guest:", error);
+        });
+    } else {
+      console.error("Invalid Guest data. Cannot update.");
+    }
+  };
+
   return (
     <div className="p-4 sm:ml-64">
       <div className="flex flex-col items-center">
-        <h2 className="italic text-center text-2xl mb-4 text-gray-700">Guest Management</h2>
+        <h2 className="italic text-center text-2xl mb-4 text-gray-700">
+          Guest Management
+        </h2>
         <div className="overflow-x-auto">
           {isLoading ? (
             <p>Loading guests...</p>
@@ -77,7 +105,7 @@ const AdminViewGuests = () => {
                       {guest.guestNicPicture ? (
                         <img
                           src={guest.guestNicPicture}
-                          alt="Staff"
+                          alt="guest"
                           className="h-12 w-12 rounded-full object-cover"
                         />
                       ) : (
@@ -86,11 +114,21 @@ const AdminViewGuests = () => {
                         </div>
                       )}
                     </td>
-                    <td className="p-4 border border-gray-300">{guest.guestName}</td>
-                    <td className="p-4 border border-gray-300">{guest.guestContactNo}</td>
-                    <td className="p-4 border border-gray-300">{guest.guestCity}</td>
-                    <td className="p-4 border border-gray-300">{guest.guestCountry}</td>
-                    <td className="p-4 border border-gray-300">{guest.guestEmail}</td>
+                    <td className="p-4 border border-gray-300">
+                      {guest.guestName}
+                    </td>
+                    <td className="p-4 border border-gray-300">
+                      {guest.guestContactNo}
+                    </td>
+                    <td className="p-4 border border-gray-300">
+                      {guest.guestCity}
+                    </td>
+                    <td className="p-4 border border-gray-300">
+                      {guest.guestCountry}
+                    </td>
+                    <td className="p-4 border border-gray-300">
+                      {guest.guestEmail}
+                    </td>
                     <td className="p-4 border border-gray-300 flex space-x-2">
                       <button
                         className="flex items-center text-blue-500 px-1 border-2 border-blue-500 py-1 rounded hover:bg-blue-500 hover:text-white"
@@ -100,7 +138,7 @@ const AdminViewGuests = () => {
                       </button>
                       <button
                         className="flex items-center text-red-500 border-2 border-red-500 px-1 py-1 rounded hover:bg-red-500 hover:text-white"
-                        onClick={() => handleDelete(guest._id)}  
+                        onClick={() => handleDelete(guest._id)}
                       >
                         <AiOutlineDelete className="mr-1" />
                       </button>
@@ -120,10 +158,20 @@ const AdminViewGuests = () => {
       </div>
 
       {openDialog && (
-        <GuestRoomDialog
+        <GuestDetailsDialog
           open={openDialog}
           guest={selectedGuest}
           onClose={handleCloseDialog}
+        />
+      )}
+
+      {/* Update Dialog Component */}
+      {selectedGuest && (
+        <UpdateGuestDialog
+          open={updateDialogOpen}
+          guest={selectedGuest}
+          onClose={handleCloseUpdateDialog}
+          onUpdate={handleUpdate}
         />
       )}
     </div>
