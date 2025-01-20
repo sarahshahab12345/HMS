@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const roomSchema = mongoose.Schema(
+const roomSchema = new mongoose.Schema(
   {
     roomId: {
       type: String,
