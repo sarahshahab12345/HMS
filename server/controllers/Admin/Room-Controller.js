@@ -1,4 +1,5 @@
 import Room from "../../models/Room-Model.js";
+
 // Get All Rooms
 const getAllRooms = async (req, res) => {
   try {
@@ -31,6 +32,7 @@ const addRoom = async (req, res) => {
       data: newRoom,
     });
   } catch (error) {
+    console.error("Error adding room:", error.message);
     res.status(500).json({
       success: false,
       message: "Error adding room",
@@ -41,14 +43,11 @@ const addRoom = async (req, res) => {
 
 // Update an Existing Room
 const updateRoom = async (req, res) => {
-  const id = req.params.id;
+  const { id } = req.params;
   const updates = req.body;
 
   try {
-    const updatedRoom = await Room.findByIdAndUpdate(id, updates, {
-      new: true, // Return the updated document
-    });
-
+    const updatedRoom = await Room.findByIdAndUpdate(id, updates, { new: true });
     if (updatedRoom) {
       res.status(200).json({
         success: true,
@@ -72,7 +71,7 @@ const updateRoom = async (req, res) => {
 
 // Delete a Room
 const deleteRoom = async (req, res) => {
-  const id = req.params.id;
+  const { id } = req.params;
 
   try {
     const roomToDelete = await Room.findById(id);

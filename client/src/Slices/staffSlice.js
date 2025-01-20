@@ -89,7 +89,7 @@ const staffSlice = createSlice({
       })
       .addCase(createStaff.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Failed to create staff";
+        state.error = action.payload || "Failed to create room";
       })
 
       // Handle updateStaff actions

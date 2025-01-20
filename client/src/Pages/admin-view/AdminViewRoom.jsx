@@ -26,13 +26,14 @@ const AdminViewRoom = () => {
   };
 
   const handleDeleteRoom = (id) => {
-    dispatch(deleteRoom(id)).then(() => {
-      alert("Room deleted successfully");
-    })
-    .catch((error) => {
-      console.error("Failed to delete room:", error);
-      alert("Failed to delete room");
-    });
+    dispatch(deleteRoom(id))
+      .then(() => {
+        alert("Room deleted successfully");
+      })
+      .catch((error) => {
+        console.error("Failed to delete room:", error);
+        alert("Failed to delete room");
+      });
   };
 
   return (
@@ -52,6 +53,7 @@ const AdminViewRoom = () => {
               <thead className="bg-gray-200">
                 <tr>
                   <th className="p-4 border border-gray-300">Room ID</th>
+                  <th className="p-4 border border-gray-300">Picture</th>
                   <th className="p-4 border border-gray-300">Room No</th>
                   <th className="p-4 border border-gray-300">Floor</th>
                   <th className="p-4 border border-gray-300">Room Type</th>
@@ -64,11 +66,24 @@ const AdminViewRoom = () => {
                 {rooms.map((room, index) => (
                   <tr
                     key={room._id}
-                    className={`bg-white ${
+                    className={`${
                       index % 2 === 0 ? "bg-gray-50" : "bg-gray-100"
                     }`}
                   >
                     <td className="p-4 border border-gray-300">{room._id}</td>
+                    <td className="p-4 border border-gray-300">
+                      {room.roomPicture ? (
+                        <img
+                          src={room.roomPicture}
+                          alt="room"
+                          className="h-12 w-12 object-cover"
+                        />
+                      ) : (
+                        <div className="h-12 w-12 bg-gray-300 flex items-center justify-center">
+                          <span className="text-gray-500">N/A</span>
+                        </div>
+                      )}
+                    </td>
                     <td className="p-4 border border-gray-300">{room.roomNo}</td>
                     <td className="p-4 border border-gray-300">{room.roomFloor}</td>
                     <td className="p-4 border border-gray-300">{room.roomType}</td>
@@ -99,7 +114,6 @@ const AdminViewRoom = () => {
         </div>
       </div>
 
-      {/* Dialog Component */}
       {selectedRoom && (
         <RoomDetailsDialog
           open={dialogOpen}

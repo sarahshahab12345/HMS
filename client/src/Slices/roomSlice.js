@@ -16,13 +16,17 @@ export const getAllRooms = createAsyncThunk("/admin/room/getAll", async () => {
 
 // Add a New Room
 export const createRoom = createAsyncThunk(
-  "/admin/room/create",
-  async (formData) => {
-    const response = await axios.post(
-      "http://localhost:5000/api/admin/room/create",
-      formData
-    );
-    return response.data;
+  "admin/room/create",
+  async (formData, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/admin/room/create",
+        formData
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Something went wrong');
+    }
   }
 );
 
@@ -80,7 +84,7 @@ const roomSlice = createSlice({
       })
       .addCase(createRoom.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.error.message;
+        state.error = action.payload || "Failed to create staff";
       })
 
       // Handle updateRoom actions
