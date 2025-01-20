@@ -94,6 +94,7 @@ function UpdateGuestDialog({ open, guest, onClose, onUpdate }) {
   };
 
   return (
+    open && (
     <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
       <div className="bg-white p-6 rounded-lg shadow-lg w-1/2 overflow-auto max-h-[80vh]">
         <h3 className="text-2xl mb-4 text-gray-700 text-center">
@@ -249,6 +250,7 @@ function UpdateGuestDialog({ open, guest, onClose, onUpdate }) {
         </form>
       </div>
     </div>
+    )
   );
 }
 

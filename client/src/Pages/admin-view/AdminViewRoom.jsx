@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllRooms, deleteRoom } from "../../Slices/roomSlice.js";
+import { getAllRooms, deleteRoom, updateRoom } from "../../Slices/roomSlice.js";
 import { AiOutlineEdit, AiOutlineDelete, AiOutlineFile } from "react-icons/ai";
 import RoomDetailsDialog from './Details/RoomDetailsDialog.jsx';
+import UpdateRoomDialog from "./UpdateDetails/UpdateRoomDialog.jsx";
 
 const AdminViewRoom = () => {
   const dispatch = useDispatch();
   const { rooms, isLoading, error } = useSelector((state) => state.room);
+  const [selectedRoom, setSelectedRoom] = useState(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
 
   useEffect(() => {
     dispatch(getAllRooms());
   }, [dispatch]);
-
-  const [selectedRoom, setSelectedRoom] = useState(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleOpenDialog = (room) => {
     setSelectedRoom(room);
@@ -24,6 +25,36 @@ const AdminViewRoom = () => {
     setSelectedRoom(null);
     setDialogOpen(false);
   };
+
+  const handleOpenUpdateDialog = (room) => {
+    console.log("Opening update dialog for room:", room);
+    setSelectedRoom(room);
+    setUpdateDialogOpen(true);
+  };
+
+  const handleCloseUpdateDialog = () => {
+    setSelectedRoom(null);
+    setUpdateDialogOpen(false);
+  };
+
+    const handleUpdate = (updatedRoom) => {
+      if (updatedRoom && updatedRoom._id) {
+        const { _id: id, ...formData } = updatedRoom; 
+        dispatch(updateRoom({ id, formData }))
+          .unwrap()
+          .then(() => {
+            console.log("Room updated successfully!");
+            // Fetch the updated guest list
+            dispatch(getAllRooms());
+          })
+          .catch((error) => {
+            console.error("Failed to update Room:", error);
+          });
+      } else {
+        console.error("Invalid Room data. Cannot update.");
+      }
+    };
+  
 
   const handleDeleteRoom = (id) => {
     dispatch(deleteRoom(id))
@@ -90,7 +121,8 @@ const AdminViewRoom = () => {
                     <td className="p-4 border border-gray-300">{room.price}</td>
                     <td className="p-4 border border-gray-300">{room.roomStatus}</td>
                     <td className="p-4 border border-gray-300 flex space-x-2">
-                      <button className="flex items-center text-blue-500 px-1 border-2 border-blue-500 py-1 rounded hover:bg-blue-500 hover:text-white">
+                      <button className="flex items-center text-blue-500 px-1 border-2 border-blue-500 py-1 rounded hover:bg-blue-500 hover:text-white"
+                      onClick={() => handleOpenUpdateDialog(room)}>
                         <AiOutlineEdit className="mr-1" />
                       </button>
                       <button
@@ -119,6 +151,16 @@ const AdminViewRoom = () => {
           open={dialogOpen}
           room={selectedRoom}
           onClose={handleCloseDialog}
+        />
+      )}
+
+       {/* Update Dialog Component */}
+       {selectedRoom && (
+        <UpdateRoomDialog
+          open={updateDialogOpen}
+          room={selectedRoom}
+          onClose={handleCloseUpdateDialog}
+          onUpdate={handleUpdate}
         />
       )}
     </div>
