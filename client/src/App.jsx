@@ -13,6 +13,8 @@ import StaffCreatePage from "./Pages/admin-view/StaffCreatePage";
 import RoomCreatePage from "./Pages/admin-view/RoomCreatePage";
 import LoginForm from "./Components/Auth/LoginForm";
 import GuestCreatePage from "./Pages/admin-view/GuestCreatePage";
+import AdminViewBooking from "./Pages/admin-view/AdminViewBooking";
+import BookingCreatePage from "./Pages/admin-view/BookingCreatePage";
 
 function App() {
   return (
@@ -30,12 +32,14 @@ function App() {
           <Route path="staff" element={<AdminViewStaff />} />
           <Route path="guest" element={<AdminViewGuest />} />
           <Route path="room" element={<AdminViewRoom />} />
+          <Route path="booking" element={<AdminViewBooking />} />
           <Route path="feedback" element={<AdminViewFeedback />} />
           <Route path="billing" element={<AdminViewBilling />} />
           <Route path="invoice" element={<AdminViewInvoice />} />
           <Route path="staff/add" element={<StaffCreatePage />} />
           <Route path="room/add" element={<RoomCreatePage />} />
           <Route path="guest/add" element={<GuestCreatePage />} />
+          <Route path="booking/add" element={<BookingCreatePage />} />
         </Route>
         <Route path="/admin/login" element={<LoginForm />} />
         <Route path="*" element={<Navigate to="/admin/dashboard" />} />{" "}

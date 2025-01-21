@@ -12,6 +12,8 @@ import StaffCreatePage from '../../../Pages/admin-view/StaffCreatePage';
 import RoomCreatePage from '../../../Pages/admin-view/RoomCreatePage';   
 import LoginForm from '../../Auth/LoginForm';
 import GuestCreatePage from '../../../Pages/admin-view/GuestCreatePage';
+import BookingCreatePage from '../../../Pages/admin-view/BookingCreatePage';
+import AdminViewBooking from '../../../Pages/admin-view/AdminViewBooking';
 
 const MainContent = () => {
   const location = useLocation();
@@ -30,6 +32,9 @@ const MainContent = () => {
     case '/admin/room':
       content = <AdminViewRoom />;
       break;
+    case '/admin/booking':
+      content = <AdminViewBooking />;
+      break;
     case '/admin/feedback':
       content = <AdminViewFeedback />;
       break;
@@ -47,6 +52,9 @@ const MainContent = () => {
       break;
     case '/admin/room/add':
       content = <RoomCreatePage />;
+      break;
+    case '/admin/booking/add':
+      content = <BookingCreatePage />;
       break;
     case '/admin/login':
       content = <LoginForm />;
