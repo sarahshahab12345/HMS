@@ -104,12 +104,25 @@ const bookingSlice = createSlice({
       })
       .addCase(createBooking.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.bookings.push(action.payload);
+        if (Array.isArray(state.bookings)) {
+          state.bookings.push(action.payload);
+        } else {
+          console.error('state.bookings is not an array');
+        }
       })
       .addCase(createBooking.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload || "Failed to create booking";
-      })
+        if (action.payload) {
+          if (action.payload.error && action.payload.error.includes("duplicate key")) {
+            state.error = "Duplicate booking ID error. Please use a different booking ID.";
+            console.error("Duplicate booking ID error");
+          } else {
+            state.error = action.payload.message || "Failed to create booking";
+          }
+        } else {
+          state.error = "Failed to create booking";
+        }
+      })      
 
       // Handle updateBooking actions
       .addCase(updateBooking.pending, (state) => {
@@ -118,9 +131,7 @@ const bookingSlice = createSlice({
       })
       .addCase(updateBooking.fulfilled, (state, action) => {
         state.isLoading = false;
-        const index = state.bookings.findIndex(
-          (booking) => booking._id === action.payload._id
-        );
+        const index = state.bookings?.findIndex((booking) => booking._id === action.payload._id) || -1;
         if (index !== -1) {
           state.bookings[index] = action.payload;
         }
@@ -137,7 +148,7 @@ const bookingSlice = createSlice({
       })
       .addCase(deleteBooking.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.bookings = state.bookings.filter((booking) => booking._id !== action.payload.id);
+        state.bookings = state.bookings?.filter((booking) => booking._id !== action.payload.id);
       })
       .addCase(deleteBooking.rejected, (state, action) => {
         state.isLoading = false;

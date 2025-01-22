@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { uploadImage } from "../../../Slices/image-uploadSlice.js"; // Adjust if necessary
 
 const UpdateBookingDialog = ({ open, booking, onClose, onUpdate }) => {
   const [updatedBooking, setUpdatedBooking] = useState(booking || {});
@@ -22,6 +21,16 @@ const UpdateBookingDialog = ({ open, booking, onClose, onUpdate }) => {
     setUpdatedBooking({ ...updatedBooking, [name]: new Date(value) });
   };
 
+  const handleCheckboxChange = (e) => {
+    const { name, checked } = e.target;
+    setUpdatedBooking({ ...updatedBooking, [name]: checked });
+  };
+
+  const handleArrayChange = (e) => {
+    const { name, value } = e.target;
+    setUpdatedBooking({ ...updatedBooking, [name]: value.split(",") });
+  };
+
   const handleUpdate = () => {
     const {
       guestId,
@@ -29,11 +38,6 @@ const UpdateBookingDialog = ({ open, booking, onClose, onUpdate }) => {
       bookingPlatform,
       bookingStartDate,
       bookingEndDate,
-      comments,
-      checkIn,
-      checkOut,
-      isCancelled,
-      foodsArray,
       totalAmount,
     } = updatedBooking;
 
@@ -76,6 +80,7 @@ const UpdateBookingDialog = ({ open, booking, onClose, onUpdate }) => {
         >
           <h3 className="text-2xl mb-4">Update Booking Details</h3>
 
+          {/* Existing fields */}
           <div className="mb-4">
             <label htmlFor="guestId" className="block mb-2">
               Guest ID
@@ -84,8 +89,17 @@ const UpdateBookingDialog = ({ open, booking, onClose, onUpdate }) => {
               type="text"
               id="guestId"
               name="guestId"
-              value={updatedBooking.guestId || ""}
-              onChange={handleInputChange}
+              value={
+                typeof updatedBooking.guestId === "object"
+                  ? updatedBooking.guestId._id || ""
+                  : updatedBooking.guestId || ""
+              }
+              onChange={(e) =>
+                setUpdatedBooking({
+                  ...updatedBooking,
+                  guestId: e.target.value,
+                })
+              }
               className="border p-2 w-full"
             />
           </div>
@@ -98,8 +112,17 @@ const UpdateBookingDialog = ({ open, booking, onClose, onUpdate }) => {
               type="text"
               id="roomId"
               name="roomId"
-              value={updatedBooking.roomId || ""}
-              onChange={handleInputChange}
+              value={
+                typeof updatedBooking.roomId === "object"
+                  ? updatedBooking.roomId._id || ""
+                  : updatedBooking.roomId || ""
+              }
+              onChange={(e) =>
+                setUpdatedBooking({
+                  ...updatedBooking,
+                  roomId: e.target.value,
+                })
+              }
               className="border p-2 w-full"
             />
           </div>
@@ -131,7 +154,9 @@ const UpdateBookingDialog = ({ open, booking, onClose, onUpdate }) => {
               name="bookingStartDate"
               value={
                 updatedBooking.bookingStartDate
-                  ? updatedBooking.bookingStartDate.split("T")[0]
+                  ? new Date(updatedBooking.bookingStartDate)
+                      .toISOString()
+                      .split("T")[0]
                   : ""
               }
               onChange={handleDateChange}
@@ -149,7 +174,9 @@ const UpdateBookingDialog = ({ open, booking, onClose, onUpdate }) => {
               name="bookingEndDate"
               value={
                 updatedBooking.bookingEndDate
-                  ? updatedBooking.bookingEndDate.split("T")[0]
+                  ? new Date(updatedBooking.bookingEndDate)
+                      .toISOString()
+                      .split("T")[0]
                   : ""
               }
               onChange={handleDateChange}
@@ -158,16 +185,69 @@ const UpdateBookingDialog = ({ open, booking, onClose, onUpdate }) => {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="comments" className="block mb-2">
-              Comments
+            <label htmlFor="checkIn" className="block mb-2">
+              Check-In Date
             </label>
-            <textarea
-              id="comments"
-              name="comments"
-              value={updatedBooking.comments || ""}
-              onChange={handleInputChange}
+            <input
+              type="date"
+              id="checkIn"
+              name="checkIn"
+              value={
+                updatedBooking.checkIn
+                  ? new Date(updatedBooking.checkIn).toISOString().split("T")[0]
+                  : ""
+              }
+              onChange={handleDateChange}
               className="border p-2 w-full"
-            ></textarea>
+            />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="checkOut" className="block mb-2">
+              Check-Out Date
+            </label>
+            <input
+              type="date"
+              id="checkOut"
+              name="checkOut"
+              value={
+                updatedBooking.checkOut
+                  ? new Date(updatedBooking.checkOut)
+                      .toISOString()
+                      .split("T")[0]
+                  : ""
+              }
+              onChange={handleDateChange}
+              className="border p-2 w-full"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="isCancelled" className="block mb-2">
+              Cancelled
+            </label>
+            <input
+              type="checkbox"
+              id="isCancelled"
+              name="isCancelled"
+              checked={updatedBooking.isCancelled || false}
+              onChange={handleCheckboxChange}
+              className="border p-2"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label htmlFor="foodsArray" className="block mb-2">
+              Foods Array (Comma Separated)
+            </label>
+            <input
+              type="text"
+              id="foodsArray"
+              name="foodsArray"
+              value={updatedBooking.foodsArray?.join(",") || ""}
+              onChange={handleArrayChange}
+              className="border p-2 w-full"
+            />
           </div>
 
           <div className="mb-4">

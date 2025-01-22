@@ -26,9 +26,29 @@ function BookingCreatePage() {
     setFormData({ ...formData, isCancelled: e.target.checked });
   };
 
+  const generateBookingId = () => {
+    const randomNumber = Math.floor(100 + Math.random() * 900); // Generates a number between 100 and 999
+    return `B${randomNumber}`;
+  };  
+  
   const handleOnSubmit = async (e) => {
     e.preventDefault();  
-    const newFormData = { ...formData, bookingId: "generated_server_side_id" };
+    
+    // Generate random booking ID
+    const generatedBookingId = generateBookingId();
+    const newFormData = { ...formData, bookingId: generatedBookingId };
+  
+    // Convert checkIn and checkOut to Date objects
+    const checkInDate = formData.checkIn ? new Date(`1970-01-01T${formData.checkIn}`) : null;
+    const checkOutDate = formData.checkOut ? new Date(`1970-01-01T${formData.checkOut}`) : null;
+  
+    if (!checkInDate || !checkOutDate || isNaN(checkInDate) || isNaN(checkOutDate)) {
+      console.error('Invalid time format');
+      return;
+    }
+  
+    newFormData.checkIn = checkInDate;
+    newFormData.checkOut = checkOutDate;
   
     dispatch(createBooking(newFormData));
   
@@ -47,7 +67,6 @@ function BookingCreatePage() {
     });
   };
   
-
   return (
     <div className="p-10 sm:ml-64">
       <div className="max-w-5xl mx-auto p-10 bg-white rounded-lg">
