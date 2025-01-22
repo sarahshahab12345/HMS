@@ -1,41 +1,79 @@
-import React from 'react';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from '@mui/material';
+import React from "react";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Typography,
+  Box,
+  Paper,
+} from "@mui/material";
 
-const GuestDetailsDialog = ({ open, guest, onClose }) => {
+const GuestDetailsDialog = ({ open, guest = {}, onClose }) => {
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <DialogTitle>Guest Details</DialogTitle>
+      <DialogTitle>
+        <Typography variant="h5" fontWeight="bold" textAlign="center">
+          Guest Details
+        </Typography>
+      </DialogTitle>
       <DialogContent>
-        <div className="flex flex-col space-y-2">
-          <div>
-            <strong>Name:</strong> {guest.guestName}
-          </div>
-          <div>
-            <strong>Email:</strong> {guest.guestEmail}
-          </div>
-          <div>
-            <strong>Contact No:</strong> {guest.guestContactNo}
-          </div>
-          <div>
-            <strong>NIC No:</strong> {guest.guestNicNo}
-          </div>
-          <div>
-            <strong>Address:</strong> {guest.guestAddress || "N/A"} {/* Optional field */}
-          </div>
-          <div>
-            <strong>City:</strong> {guest.guestCity}
-          </div>
-          <div>
-            <strong>Country:</strong> {guest.guestCountry}
-          </div>
-          <div>
-            <strong>Gender:</strong> {guest.guestGender}
-          </div>
-          {/* You can add more fields as needed */}
-        </div>
+        <Box display="flex" flexDirection="column" gap={3}>
+          {/* Guest Details Section */}
+          <Paper elevation={2} sx={{ padding: 2 }}>
+            <Typography variant="h6" fontWeight="bold" gutterBottom>
+              Personal Information
+            </Typography>
+            <Typography>
+              <strong>Guest ID:</strong> {guest._id || "N/A"}
+            </Typography>
+            <Typography>
+              <strong>Name:</strong> {guest.guestName || "N/A"}
+            </Typography>
+            <Typography>
+              <strong>Email:</strong> {guest.guestEmail || "N/A"}
+            </Typography>
+            <Typography>
+              <strong>Contact No:</strong> {guest.guestContactNo || "N/A"}
+            </Typography>
+            <Typography>
+              <strong>NIC No:</strong> {guest.guestNicNo || "N/A"}
+            </Typography>
+          </Paper>
+
+          {/* Address Section */}
+          <Paper elevation={2} sx={{ padding: 2 }}>
+            <Typography variant="h6" fontWeight="bold" gutterBottom>
+              Address Information
+            </Typography>
+            <Typography>
+              <strong>Address:</strong>{" "}
+              {guest.guestAddress || (
+                <span style={{ color: "gray", fontStyle: "italic" }}>Not provided</span>
+              )}
+            </Typography>
+            <Typography>
+              <strong>City:</strong> {guest.guestCity || "N/A"}
+            </Typography>
+            <Typography>
+              <strong>Country:</strong> {guest.guestCountry || "N/A"}
+            </Typography>
+          </Paper>
+
+          {/* Additional Details Section */}
+          <Paper elevation={2} sx={{ padding: 2 }}>
+            <Typography variant="h6" fontWeight="bold" gutterBottom>
+              Other Details
+            </Typography>
+            <Typography>
+              <strong>Gender:</strong> {guest.guestGender || "N/A"}
+            </Typography>
+          </Paper>
+        </Box>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="primary">
+        <Button onClick={onClose} variant="contained" color="primary">
           Close
         </Button>
       </DialogActions>

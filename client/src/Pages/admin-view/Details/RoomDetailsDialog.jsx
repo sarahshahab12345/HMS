@@ -1,38 +1,73 @@
 import React from "react";
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button } from "@mui/material";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  Typography,
+  Box,
+  Paper,
+} from "@mui/material";
 
-const RoomDetailsDialog = ({ open, room, onClose }) => {
+const RoomDetailsDialog = ({ open, room = {}, onClose }) => {
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth="md">
-      <DialogTitle>Room Details</DialogTitle>
+      <DialogTitle>
+        <Typography variant="h5" fontWeight="bold" textAlign="center">
+          Room Details
+        </Typography>
+      </DialogTitle>
       <DialogContent>
-        {room ? (
-          <div className="flex flex-col space-y-2">
-            <div>
-              <strong>Room ID:</strong> {room.roomId || "N/A"}
-            </div>
-            <div>
-              <strong>Room Number:</strong> {room.roomNo || "N/A"}
-            </div>
-            <div>
-              <strong>Floor:</strong> {room.roomFloor || "N/A"}
-            </div>
-            <div>
-              <strong>Type:</strong> {room.roomType || "N/A"}
-            </div>
-            <div>
-              <strong>Price:</strong> {room.price ? `$${room.price}` : "N/A"}
-            </div>
-            <div>
-              <strong>Status:</strong> {room.roomStatus || "N/A"}
-            </div>
-          </div>
+        {Object.keys(room).length ? (
+          <Paper elevation={2} sx={{ padding: 3, borderRadius: 2 }}>
+            <Box display="flex" flexDirection="column" gap={2}>
+              <Typography>
+                <strong>Room ID:</strong> {room._id || "N/A"}
+              </Typography>
+              <Typography>
+                <strong>Room Number:</strong> {room.roomNo || "N/A"}
+              </Typography>
+              <Typography>
+                <strong>Floor:</strong> {room.roomFloor || "N/A"}
+              </Typography>
+              <Typography>
+                <strong>Type:</strong> {room.roomType || "N/A"}
+              </Typography>
+              <Typography>
+                <strong>Price:</strong> {room.price ? `$${room.price}` : "N/A"}
+              </Typography>
+              <Typography>
+                <strong>Status:</strong>{" "}
+                <span
+                  style={{
+                    color: room.roomStatus === "Available" ? "green" : "red",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {room.roomStatus || "N/A"}
+                </span>
+              </Typography>
+            </Box>
+          </Paper>
         ) : (
-          <div>No room details available.</div>
+          <Typography
+            variant="body1"
+            textAlign="center"
+            color="textSecondary"
+            sx={{ marginTop: 2 }}
+          >
+            No room details available.
+          </Typography>
         )}
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color="primary">
+        <Button
+          onClick={onClose}
+          variant="contained"
+          color="primary"
+          sx={{ textTransform: "none", paddingX: 3 }}
+        >
           Close
         </Button>
       </DialogActions>
