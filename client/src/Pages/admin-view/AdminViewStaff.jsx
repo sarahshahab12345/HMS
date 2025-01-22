@@ -16,6 +16,7 @@ const AdminViewStaff = () => {
   const [selectedStaff, setSelectedStaff] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const handleOpenDialog = (staff) => {
     setSelectedStaff(staff);
@@ -37,14 +38,41 @@ const AdminViewStaff = () => {
     setUpdateDialogOpen(false);
   };
 
+  const handleOpenDeleteDialog = (staff) => {
+    setSelectedStaff(staff);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setSelectedStaff(null);
+    setDeleteDialogOpen(false);
+  };
+
+  const handleConfirmDelete = () => {
+    if (selectedStaff && selectedStaff._id) {
+      dispatch(deleteStaff(selectedStaff._id))
+        .unwrap()
+        .then(() => {
+          console.log("Staff deleted successfully!");
+          dispatch(getAllStaff());
+        })
+        .catch((error) => {
+          console.error("Failed to delete staff:", error);
+        })
+        .finally(() => {
+          setDeleteDialogOpen(false);
+          setSelectedStaff(null);
+        });
+    }
+  };
+
   const handleUpdate = (updatedStaff) => {
     if (updatedStaff && updatedStaff._id) {
-      const { _id: id, ...formData } = updatedStaff; // Extract id and formData
+      const { _id: id, ...formData } = updatedStaff;
       dispatch(updateStaff({ id, formData }))
         .unwrap()
         .then(() => {
           console.log("Staff updated successfully!");
-          // Fetch the updated staff list
           dispatch(getAllStaff());
         })
         .catch((error) => {
@@ -55,23 +83,9 @@ const AdminViewStaff = () => {
     }
   };
 
-  const handleDeleteStaff = (id) => {
-    dispatch(deleteStaff(id))
-      .unwrap()
-      .then(() => {
-        console.log("Staff deleted successfully!");
-        // Fetch the updated staff list
-        dispatch(getAllStaff());
-      })
-      .catch((error) => {
-        console.error("Failed to delete staff:", error);
-      });
-  };
-
   return (
     <div className="p-4 sm:ml-64">
       <div className="flex flex-col items-center">
-        {/* Heading before the table */}
         <h2 className="italic text-center text-2xl mb-4 text-gray-700">
           Staff Management
         </h2>
@@ -137,7 +151,7 @@ const AdminViewStaff = () => {
                       </button>
                       <button
                         className="flex items-center text-red-500 border-2 border-red-500 px-1 py-1 rounded hover:bg-red-500 hover:text-white"
-                        onClick={() => handleDeleteStaff(staff._id)}
+                        onClick={() => handleOpenDeleteDialog(staff)}
                       >
                         <AiOutlineDelete className="mr-1" />
                       </button>
@@ -156,7 +170,7 @@ const AdminViewStaff = () => {
         </div>
       </div>
 
-      {/* Dialog Component */}
+      {/* Details Dialog */}
       {selectedStaff && (
         <StaffDetailsDialog
           open={dialogOpen}
@@ -165,7 +179,7 @@ const AdminViewStaff = () => {
         />
       )}
 
-      {/* Update Dialog Component */}
+      {/* Update Dialog */}
       {selectedStaff && (
         <UpdateStaffDialog
           open={updateDialogOpen}
@@ -173,6 +187,29 @@ const AdminViewStaff = () => {
           onClose={handleCloseUpdateDialog}
           onUpdate={handleUpdate}
         />
+      )}
+
+      {/* Delete Confirmation Dialog */}
+      {deleteDialogOpen && selectedStaff && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-md p-6 shadow-lg">
+            <p>Are you sure you want to delete {selectedStaff.staffName}?</p>
+            <div className="flex justify-end mt-4 space-x-2">
+              <button
+                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                onClick={handleCloseDeleteDialog}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                onClick={handleConfirmDelete}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

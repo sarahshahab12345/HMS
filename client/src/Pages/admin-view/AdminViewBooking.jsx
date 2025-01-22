@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { AiOutlineEdit, AiOutlineDelete, AiOutlineFile } from "react-icons/ai";
-import { getAllBookings } from "../../Slices/bookingSlice.js";
+import {
+  getAllBookings,
+  deleteBooking,
+  updateBooking,
+} from "../../Slices/bookingSlice.js";
 import BookingDetailsDialog from "./Details/BookingDetailsDialog.jsx";
+import UpdateBookingDialog from "./UpdateDetails/UpdateBookingDialog.jsx";
 
 const AdminViewBookings = () => {
   const dispatch = useDispatch();
@@ -16,6 +21,8 @@ const AdminViewBookings = () => {
   const [selectedBooking, setselectedBooking] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [bookingToDelete, setBookingToDelete] = useState(null);
 
   const handleOpenDialog = (booking) => {
     setselectedBooking(booking);
@@ -25,6 +32,59 @@ const AdminViewBookings = () => {
   const handleCloseDialog = () => {
     setselectedBooking(null);
     setDialogOpen(false);
+  };
+
+  const handleOpenUpdateDialog = (booking) => {
+    setselectedBooking(booking);
+    setUpdateDialogOpen(true);
+  };
+
+  const handleCloseUpdateDialog = () => {
+    setselectedBooking(null);
+    setUpdateDialogOpen(false);
+  };
+
+  const openConfirmDialog = (id) => {
+    setBookingToDelete(id);
+    setConfirmDialogOpen(true);
+  };
+
+  const closeConfirmDialog = () => {
+    setBookingToDelete(null);
+    setConfirmDialogOpen(false);
+  };
+
+  const handleUpdate = (updatedBooking) => {
+    if (updatedBooking && updatedBooking._id) {
+      const { _id: id, ...formData } = updatedBooking; 
+      dispatch(updateBooking({ id, formData }))
+        .unwrap()
+        .then(() => {
+          console.log("Booking updated successfully!");
+          // Fetch the updated booking list
+          dispatch(getAllBookings());
+        })
+        .catch((error) => {
+          console.error("Failed to update booking:", error);
+        });
+    } else {
+      console.error("Invalid booking data. Cannot update.");
+    }
+  };
+
+  const handleDeleteBooking = (id) => {
+    dispatch(deleteBooking(id))
+      .unwrap()
+      .then(() => {
+        console.log("Booking deleted successfully!");
+        // Delay fetching updated bookings slightly
+        setTimeout(() => {
+          dispatch(getAllBookings());
+        }, 100); // Adjust delay if needed
+      })
+      .catch((error) => {
+        console.error("Failed to delete booking:", error);
+      });
   };
 
   if (isLoading) {
@@ -97,12 +157,19 @@ const AdminViewBookings = () => {
                           ${booking.totalAmount}
                         </td>
                         <td className="p-4 border border-gray-300 flex space-x-2">
-                          <button className="flex items-center text-blue-500 px-1 border-2 border-blue-500 py-1 rounded hover:bg-blue-500 hover:text-white">
+                          <button
+                            className="flex items-center text-blue-500 px-1 border-2 border-blue-500 py-1 rounded hover:bg-blue-500 hover:text-white"
+                            onClick={() => handleOpenUpdateDialog(booking)}
+                          >
                             <AiOutlineEdit className="mr-1" />
                           </button>
-                          <button className="flex items-center text-red-500 border-2 border-red-500 px-1 py-1 rounded hover:bg-red-500 hover:text-white">
+                          <button
+                            className="flex items-center text-red-500 border-2 border-red-500 px-1 py-1 rounded hover:bg-red-500 hover:text-white"
+                            onClick={() => openConfirmDialog(booking._id)}
+                          >
                             <AiOutlineDelete className="mr-1" />
                           </button>
+
                           <button
                             className="flex items-center text-green-500 border-2 border-green-500 px-1 py-1 rounded hover:bg-green-500 hover:text-white"
                             onClick={() => handleOpenDialog(booking)}
@@ -144,6 +211,41 @@ const AdminViewBookings = () => {
           booking={selectedBooking}
           onClose={handleCloseDialog}
         />
+      )}
+
+      {/* Update Dialog Component */}
+      {selectedBooking && (
+        <UpdateBookingDialog
+          open={updateDialogOpen}
+          booking={selectedBooking}
+          onClose={handleCloseUpdateDialog}
+          onUpdate={handleUpdate}
+        />
+      )}
+
+      {confirmDialogOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-4 rounded shadow-md">
+            <p>Are you sure you want to delete this booking?</p>
+            <div className="flex justify-end space-x-2 mt-4">
+              <button
+                className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+                onClick={closeConfirmDialog}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                onClick={() => {
+                  handleDeleteBooking(bookingToDelete);
+                  closeConfirmDialog();
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

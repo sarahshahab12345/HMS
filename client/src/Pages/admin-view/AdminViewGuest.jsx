@@ -11,6 +11,7 @@ const AdminViewGuests = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedGuest, setSelectedGuest] = useState(null);
   const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false); 
 
   useEffect(() => {
     dispatch(getAllGuests());
@@ -27,7 +28,6 @@ const AdminViewGuests = () => {
   };
 
   const handleOpenUpdateDialog = (guest) => {
-    console.log("Opening update dialog for guest:", guest);
     setSelectedGuest(guest);
     setUpdateDialogOpen(true);
   };
@@ -37,16 +37,31 @@ const AdminViewGuests = () => {
     setUpdateDialogOpen(false);
   };
 
-  // Handle Delete functionality
-  const handleDelete = (guestId) => {
-    dispatch(deleteGuest(guestId))
-      .then(() => {
-        alert("Guest deleted successfully");
-      })
-      .catch((error) => {
-        console.error("Failed to delete guest:", error);
-        alert("Failed to delete guest");
-      });
+  const handleOpenDeleteDialog = (guest) => {
+    setSelectedGuest(guest);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setDeleteDialogOpen(false);
+    setSelectedGuest(null);
+  };
+
+  const handleDelete = () => {
+    if (selectedGuest && selectedGuest._id) {
+      dispatch(deleteGuest(selectedGuest._id))
+        .then(() => {
+          alert("Guest deleted successfully");
+          dispatch(getAllGuests()); // Refresh the list
+        })
+        .catch((error) => {
+          console.error("Failed to delete guest:", error);
+          alert("Failed to delete guest");
+        })
+        .finally(() => {
+          handleCloseDeleteDialog();
+        });
+    }
   };
 
   const handleUpdate = (updatedGuest) => {
@@ -55,15 +70,11 @@ const AdminViewGuests = () => {
       dispatch(updateGuest({ id, formData }))
         .unwrap()
         .then(() => {
-          console.log("Guest updated successfully!");
-          // Fetch the updated guest list
           dispatch(getAllGuests());
         })
         .catch((error) => {
           console.error("Failed to update Guest:", error);
         });
-    } else {
-      console.error("Invalid Guest data. Cannot update.");
     }
   };
 
@@ -138,7 +149,7 @@ const AdminViewGuests = () => {
                       </button>
                       <button
                         className="flex items-center text-red-500 border-2 border-red-500 px-1 py-1 rounded hover:bg-red-500 hover:text-white"
-                        onClick={() => handleDelete(guest._id)}
+                        onClick={() => handleOpenDeleteDialog(guest)}
                       >
                         <AiOutlineDelete className="mr-1" />
                       </button>
@@ -165,7 +176,28 @@ const AdminViewGuests = () => {
         />
       )}
 
-      {/* Update Dialog Component */}
+      {deleteDialogOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded shadow-md">
+            <p>Are you sure you want to delete this guest?</p>
+            <div className="flex justify-end space-x-4 mt-4">
+              <button
+                className="px-4 py-2 bg-gray-300 rounded"
+                onClick={handleCloseDeleteDialog}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-red-500 text-white rounded"
+                onClick={handleDelete}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {selectedGuest && (
         <UpdateGuestDialog
           open={updateDialogOpen}
