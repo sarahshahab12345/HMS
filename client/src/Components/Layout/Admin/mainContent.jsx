@@ -14,6 +14,8 @@ import LoginForm from '../../Auth/LoginForm';
 import GuestCreatePage from '../../../Pages/admin-view/GuestCreatePage';
 import BookingCreatePage from '../../../Pages/admin-view/BookingCreatePage';
 import AdminViewBooking from '../../../Pages/admin-view/AdminViewBooking';
+import AdminViewFood from '../../../Pages/admin-view/AdminViewFood';
+import FoodCreatePage from '../../../Pages/admin-view/FoodCreatePage';
 
 const MainContent = () => {
   const location = useLocation();
@@ -35,6 +37,9 @@ const MainContent = () => {
     case '/admin/booking':
       content = <AdminViewBooking />;
       break;
+    case '/admin/food':
+      content = <AdminViewFood />;
+      break;
     case '/admin/feedback':
       content = <AdminViewFeedback />;
       break;
@@ -55,6 +60,9 @@ const MainContent = () => {
       break;
     case '/admin/booking/add':
       content = <BookingCreatePage />;
+      break;
+    case '/admin/food/add':
+      content = <FoodCreatePage />;
       break;
     case '/admin/login':
       content = <LoginForm />;

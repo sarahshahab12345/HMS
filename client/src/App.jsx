@@ -15,6 +15,8 @@ import LoginForm from "./Components/Auth/LoginForm";
 import GuestCreatePage from "./Pages/admin-view/GuestCreatePage";
 import AdminViewBooking from "./Pages/admin-view/AdminViewBooking";
 import BookingCreatePage from "./Pages/admin-view/BookingCreatePage";
+import AdminViewFood from "./Pages/admin-view/AdminViewFood";
+import FoodCreatePage from "./Pages/admin-view/FoodCreatePage";
 
 function App() {
   return (
@@ -33,6 +35,7 @@ function App() {
           <Route path="guest" element={<AdminViewGuest />} />
           <Route path="room" element={<AdminViewRoom />} />
           <Route path="booking" element={<AdminViewBooking />} />
+          <Route path="food" element={<AdminViewFood />} />
           <Route path="feedback" element={<AdminViewFeedback />} />
           <Route path="billing" element={<AdminViewBilling />} />
           <Route path="invoice" element={<AdminViewInvoice />} />
@@ -40,6 +43,7 @@ function App() {
           <Route path="room/add" element={<RoomCreatePage />} />
           <Route path="guest/add" element={<GuestCreatePage />} />
           <Route path="booking/add" element={<BookingCreatePage />} />
+          <Route path="food/add" element={<FoodCreatePage />} />
         </Route>
         <Route path="/admin/login" element={<LoginForm />} />
         <Route path="*" element={<Navigate to="/admin/dashboard" />} />{" "}
