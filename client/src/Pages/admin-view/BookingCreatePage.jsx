@@ -1,9 +1,11 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { createBooking } from "../../Slices/bookingSlice.js";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { createBooking } from "../../Slices/bookingSlice";
+import { getAllGuests } from "../../Slices/guestSlice";  
 
 function BookingCreatePage() {
   const dispatch = useDispatch();
+  const { guests, isLoading, error } = useSelector((state) => state.guests); 
   const [formData, setFormData] = useState({
     guestId: "",
     roomId: "",
@@ -11,12 +13,15 @@ function BookingCreatePage() {
     bookingStartDate: "",
     bookingEndDate: "",
     comments: "",
-    checkIn: "",
     checkOut: "",
     isCancelled: false,
     foodsArray: [],
     totalAmount: "",
   });
+
+  useEffect(() => {
+    dispatch(getAllGuests());  
+  }, [dispatch]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -27,31 +32,29 @@ function BookingCreatePage() {
   };
 
   const generateBookingId = () => {
-    const randomNumber = Math.floor(100 + Math.random() * 900); // Generates a number between 100 and 999
+    const randomNumber = Math.floor(100 + Math.random() * 900); 9
     return `B${randomNumber}`;
-  };  
-  
+  };
+
   const handleOnSubmit = async (e) => {
-    e.preventDefault();  
-    
+    e.preventDefault();
+
     // Generate random booking ID
     const generatedBookingId = generateBookingId();
-    const newFormData = { ...formData, bookingId: generatedBookingId };
-  
-    // Convert checkIn and checkOut to Date objects
-    const checkInDate = formData.checkIn ? new Date(`1970-01-01T${formData.checkIn}`) : null;
-    const checkOutDate = formData.checkOut ? new Date(`1970-01-01T${formData.checkOut}`) : null;
-  
-    if (!checkInDate || !checkOutDate || isNaN(checkInDate) || isNaN(checkOutDate)) {
-      console.error('Invalid time format');
-      return;
-    }
-  
-    newFormData.checkIn = checkInDate;
-    newFormData.checkOut = checkOutDate;
-  
+
+    // Capture the exact current time for checkIn
+    const currentTime = new Date().toISOString();
+
+    const newFormData = {
+      ...formData,
+      bookingId: generatedBookingId,
+      checkIn: currentTime, // Automatically set current time as checkIn
+    };
+
+    // Dispatch the action to create the booking
     dispatch(createBooking(newFormData));
-  
+
+    // Reset form data
     setFormData({
       guestId: "",
       roomId: "",
@@ -59,14 +62,21 @@ function BookingCreatePage() {
       bookingStartDate: "",
       bookingEndDate: "",
       comments: "",
-      checkIn: "",
       checkOut: "",
       isCancelled: false,
       foodsArray: [],
       totalAmount: "",
     });
   };
-  
+
+  if (isLoading) {
+    return <p>Loading guests...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
+
   return (
     <div className="p-10 sm:ml-64">
       <div className="max-w-5xl mx-auto p-10 bg-white rounded-lg">
@@ -74,19 +84,28 @@ function BookingCreatePage() {
         <form onSubmit={handleOnSubmit} className="space-y-6">
           <div className="grid md:grid-cols-2 gap-6">
             <div className="flex flex-col">
-              <label htmlFor="guestId" className="text-gray-700 text-lg">Guest ID</label>
-              <input
-                type="text"
+              <label htmlFor="guestId" className="text-gray-700 text-lg">
+                Guest ID
+              </label>
+              <select
                 name="guestId"
                 value={formData.guestId}
                 onChange={handleChange}
                 className="border p-3 rounded mt-1 shadow-lg"
-                placeholder="Enter Guest ID"
                 required
-              />
+              >
+                <option value="">Select Guest</option>
+                {guests.map((guests) => (
+                  <option key={guests._id} value={guests._id}>
+                    {guests.name} ({guests._id})
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="flex flex-col">
-              <label htmlFor="roomId" className="text-gray-700 text-lg">Room ID</label>
+              <label htmlFor="roomId" className="text-gray-700 text-lg">
+                Room ID
+              </label>
               <input
                 type="text"
                 name="roomId"
@@ -98,7 +117,9 @@ function BookingCreatePage() {
               />
             </div>
             <div className="flex flex-col">
-              <label htmlFor="bookingPlatform" className="text-gray-700 text-lg">Booking Platform</label>
+              <label htmlFor="bookingPlatform" className="text-gray-700 text-lg">
+                Booking Platform
+              </label>
               <select
                 name="bookingPlatform"
                 value={formData.bookingPlatform}
@@ -112,7 +133,9 @@ function BookingCreatePage() {
               </select>
             </div>
             <div className="flex flex-col">
-              <label htmlFor="bookingStartDate" className="text-gray-700 text-lg">Booking Start Date</label>
+              <label htmlFor="bookingStartDate" className="text-gray-700 text-lg">
+                Booking Start Date
+              </label>
               <input
                 type="date"
                 name="bookingStartDate"
@@ -123,7 +146,9 @@ function BookingCreatePage() {
               />
             </div>
             <div className="flex flex-col">
-              <label htmlFor="bookingEndDate" className="text-gray-700 text-lg">Booking End Date</label>
+              <label htmlFor="bookingEndDate" className="text-gray-700 text-lg">
+                Booking End Date
+              </label>
               <input
                 type="date"
                 name="bookingEndDate"
@@ -134,7 +159,9 @@ function BookingCreatePage() {
               />
             </div>
             <div className="flex flex-col">
-              <label htmlFor="comments" className="text-gray-700 text-lg">Comments</label>
+              <label htmlFor="comments" className="text-gray-700 text-lg">
+                Comments
+              </label>
               <textarea
                 name="comments"
                 value={formData.comments}
@@ -145,17 +172,9 @@ function BookingCreatePage() {
               ></textarea>
             </div>
             <div className="flex flex-col">
-              <label htmlFor="checkIn" className="text-gray-700 text-lg">Check In</label>
-              <input
-                type="time"
-                name="checkIn"
-                value={formData.checkIn}
-                onChange={handleChange}
-                className="border p-3 rounded mt-1 shadow-lg"
-              />
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="checkOut" className="text-gray-700 text-lg">Check Out</label>
+              <label htmlFor="checkOut" className="text-gray-700 text-lg">
+                Check Out
+              </label>
               <input
                 type="time"
                 name="checkOut"
@@ -165,7 +184,9 @@ function BookingCreatePage() {
               />
             </div>
             <div className="flex flex-col">
-              <label htmlFor="isCancelled" className="text-gray-700 text-lg">Is Cancelled</label>
+              <label htmlFor="isCancelled" className="text-gray-700 text-lg">
+                Is Cancelled
+              </label>
               <input
                 type="checkbox"
                 name="isCancelled"
@@ -175,7 +196,9 @@ function BookingCreatePage() {
               />
             </div>
             <div className="flex flex-col">
-              <label htmlFor="foodsArray" className="text-gray-700 text-lg">Foods Array (Optional)</label>
+              <label htmlFor="foodsArray" className="text-gray-700 text-lg">
+                Foods Array (Optional)
+              </label>
               <input
                 type="text"
                 name="foodsArray"
@@ -186,7 +209,9 @@ function BookingCreatePage() {
               />
             </div>
             <div className="flex flex-col">
-              <label htmlFor="totalAmount" className="text-gray-700 text-lg">Total Amount</label>
+              <label htmlFor="totalAmount" className="text-gray-700 text-lg">
+                Total Amount
+              </label>
               <input
                 type="number"
                 name="totalAmount"
