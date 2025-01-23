@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createBooking } from "../../Slices/bookingSlice";
-import { getAllGuests } from "../../Slices/guestSlice";  
+import { getAllGuests } from "../../Slices/guestSlice";
+import { getAllRooms } from "../../Slices/roomSlice";
 
 function BookingCreatePage() {
   const dispatch = useDispatch();
-  const { guests, isLoading, error } = useSelector((state) => state.guests); 
+  const { guests } = useSelector((state) => state.guests);
+  const { rooms, isLoading: roomsLoading } = useSelector((state) => state.room); // Correctly access `rooms` (plural)
   const [formData, setFormData] = useState({
     guestId: "",
     roomId: "",
@@ -20,7 +22,11 @@ function BookingCreatePage() {
   });
 
   useEffect(() => {
-    dispatch(getAllGuests());  
+    dispatch(getAllGuests());
+  }, [dispatch]);
+
+  useEffect(() => {
+    dispatch(getAllRooms());
   }, [dispatch]);
 
   const handleChange = (e) => {
@@ -32,7 +38,7 @@ function BookingCreatePage() {
   };
 
   const generateBookingId = () => {
-    const randomNumber = Math.floor(100 + Math.random() * 900); 9
+    const randomNumber = Math.floor(100 + Math.random() * 900);
     return `B${randomNumber}`;
   };
 
@@ -69,18 +75,17 @@ function BookingCreatePage() {
     });
   };
 
-  if (isLoading) {
-    return <p>Loading guests...</p>;
-  }
-
-  if (error) {
-    return <p>Error: {error}</p>;
+  // Add check to ensure rooms are loaded
+  if (roomsLoading) {
+    return <div>Loading rooms...</div>;
   }
 
   return (
     <div className="p-10 sm:ml-64">
       <div className="max-w-5xl mx-auto p-10 bg-white rounded-lg">
-        <h2 className="text-3xl font-bold mb-8 text-gray-800">Create Booking</h2>
+        <h2 className="text-3xl font-bold mb-8 text-gray-800">
+          Create Booking
+        </h2>
         <form onSubmit={handleOnSubmit} className="space-y-6">
           <div className="grid md:grid-cols-2 gap-6">
             <div className="flex flex-col">
@@ -95,9 +100,9 @@ function BookingCreatePage() {
                 required
               >
                 <option value="">Select Guest</option>
-                {guests.map((guests) => (
-                  <option key={guests._id} value={guests._id}>
-                    {guests.name} ({guests._id})
+                {guests.map((guest) => (
+                  <option key={guest._id} value={guest._id}>
+                    {guest.name} ({guest._id})
                   </option>
                 ))}
               </select>
@@ -106,18 +111,28 @@ function BookingCreatePage() {
               <label htmlFor="roomId" className="text-gray-700 text-lg">
                 Room ID
               </label>
-              <input
-                type="text"
+              <select
                 name="roomId"
                 value={formData.roomId}
                 onChange={handleChange}
                 className="border p-3 rounded mt-1 shadow-lg"
-                placeholder="Enter Room ID"
                 required
-              />
+              >
+                <option value="">Select Room</option>
+                {rooms
+                  ?.filter((room) => room.roomStatus === "Vacant") 
+                  .map((room) => (
+                    <option key={room._id} value={room._id}>
+                      {room.roomTitle} ({room._id})
+                    </option>
+                  ))}
+              </select>
             </div>
             <div className="flex flex-col">
-              <label htmlFor="bookingPlatform" className="text-gray-700 text-lg">
+              <label
+                htmlFor="bookingPlatform"
+                className="text-gray-700 text-lg"
+              >
                 Booking Platform
               </label>
               <select
@@ -133,7 +148,10 @@ function BookingCreatePage() {
               </select>
             </div>
             <div className="flex flex-col">
-              <label htmlFor="bookingStartDate" className="text-gray-700 text-lg">
+              <label
+                htmlFor="bookingStartDate"
+                className="text-gray-700 text-lg"
+              >
                 Booking Start Date
               </label>
               <input
