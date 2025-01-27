@@ -117,8 +117,8 @@ const login = async (req, res) => {
 
   try {
     console.log("Login attempt with email:", staffEmail);
-    // Find staff by email
     const staff = await Staff.findOne({ staffEmail });
+
     if (!staff) {
       console.log("Staff not found for email:", staffEmail);
       return res.status(404).json({
@@ -127,42 +127,37 @@ const login = async (req, res) => {
       });
     }
 
-    console.log("Entered Password:", staffPassword); 
-    console.log("Stored Password:", staff.staffPassword);
-
     if (staffPassword !== staff.staffPassword) {
-      console.log("Password mismatch for email:", staffEmail); 
+      console.log("Password mismatch for email:", staffEmail);
       return res.status(400).json({
         success: false,
         message: "Invalid credentials",
       });
     }
 
-    // Create JWT token
-    console.log("Generating JWT token..."); 
     const token = jwt.sign(
       { staffId: staff._id, staffEmail: staff.staffEmail },
-      process.env.SECRET_KEY, 
+      process.env.SECRET_KEY,
       { expiresIn: "1h" }
     );
 
-    // Set the token as an HTTP-only cookie
-    console.log("Setting token as cookie...");
-    res.cookie("authToken", token, {
-      httpOnly: true, // Prevent client-side JavaScript from accessing the cookie
-      secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-      sameSite: "strict", // Helps prevent CSRF
-      maxAge: 3600000, // 1 hour in milliseconds
-    });
+    console.log("Token generated:", token); // Added for debugging
 
-    // Respond with success
+    res.cookie("authToken", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production" ? true : false, // Ensure cookies are secure in production
+      sameSite: "strict", // SameSite attribute
+      maxAge: 3600000, // 1 hour in milliseconds
+    });    
+
     console.log("Login successful, token set in cookie...");
+
     res.status(200).json({
       success: true,
       message: "Login successful",
     });
   } catch (error) {
-    console.log("Error logging in:", error.message); 
+    console.log("Error logging in:", error.message);
     res.status(500).json({
       success: false,
       message: "Error logging in",

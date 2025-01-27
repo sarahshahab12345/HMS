@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { login } from '../../Slices/AdminAuthSlice.js'; 
+import { login, checkAuth } from '../../Slices/AdminAuthSlice.js'; 
 import { useNavigate } from 'react-router-dom';
 
 function LoginForm() {
@@ -17,15 +17,17 @@ function LoginForm() {
     const credentials = { staffEmail: email, staffPassword: password };
 
     dispatch(login(credentials))
-      .unwrap()
-      .then(() => {
-        // Redirect to dashboard or home on successful login
-        navigate('/admin/dashboard'); 
-      })
-      .catch((error) => {
-        // Handle any errors from the login
-        console.error('Login failed:', error);
-      });
+    .unwrap()
+    .then(() => {
+      dispatch(checkAuth());
+  
+      // Redirect to dashboard or home on successful login
+      navigate('/admin/dashboard'); 
+    })
+    .catch((error) => {
+      // Handle any errors from the login
+      console.error('Login failed:', error);
+    });
   };
 
   return (
