@@ -1,4 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllRooms, updateRoom } from "../../Slices/roomSlice.js";
+import { AiOutlineEdit, AiOutlineFile } from "react-icons/ai";
+import RoomDetailsDialog from "../admin-view/Details/RoomDetailsDialog.jsx";
+import UpdateRoomDialog from "../admin-view/UpdateDetails/UpdateRoomDialog.jsx";
 
 const HouseKeeperViewRooms = () => {
   const dispatch = useDispatch();
@@ -6,22 +11,10 @@ const HouseKeeperViewRooms = () => {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [roomToDelete, setRoomToDelete] = useState(null);
 
   useEffect(() => {
     dispatch(getAllRooms());
   }, [dispatch]);
-
-  const handleOpenDeleteDialog = (roomId) => {
-    setRoomToDelete(roomId);
-    setDeleteDialogOpen(true);
-  };
-
-  const handleCloseDeleteDialog = () => {
-    setRoomToDelete(null);
-    setDeleteDialogOpen(false);
-  };
 
   const handleOpenDialog = (room) => {
     setSelectedRoom(room);
@@ -62,19 +55,6 @@ const HouseKeeperViewRooms = () => {
     }
   };
 
-  const confirmDeleteRoom = () => {
-    if (roomToDelete) {
-      dispatch(deleteRoom(roomToDelete))
-        .then(() => {
-          alert("Room deleted successfully");
-          setDeleteDialogOpen(false);
-        })
-        .catch((error) => {
-          console.error("Failed to delete room:", error);
-          alert("Failed to delete room");
-        });
-    }
-  };
   return (
     <div className="p-4 sm:ml-64">
     <div className="flex flex-col items-center">
@@ -143,13 +123,7 @@ const HouseKeeperViewRooms = () => {
                     >
                       <AiOutlineEdit className="mr-1" />
                     </button>
-                    <button
-                      className="flex items-center text-red-500 border-2 border-red-500 px-1 py-1 rounded hover:bg-red-500 hover:text-white"
-                      onClick={() => handleOpenDeleteDialog(room._id)}
-                    >
-                      <AiOutlineDelete className="mr-1" />
-                    </button>
-
+              
                     <button
                       className="flex items-center text-green-500 border-2 border-green-500 px-1 py-1 rounded hover:bg-green-500 hover:text-white"
                       onClick={() => handleOpenDialog(room)}
@@ -173,28 +147,7 @@ const HouseKeeperViewRooms = () => {
       />
     )}
 
-    {deleteDialogOpen && (
-      <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-        <div className="bg-white p-6 rounded shadow-lg text-center">
-          <p className="mb-4">Are you sure you want to delete this room?</p>
-          <div className="flex justify-center space-x-4">
-            <button
-              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-              onClick={handleCloseDeleteDialog}
-            >
-              Cancel
-            </button>
-            <button
-              className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-              onClick={confirmDeleteRoom}
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-      </div>
-    )}
-
+   
     {/* Update Dialog Component */}
     {selectedRoom && (
       <UpdateRoomDialog
