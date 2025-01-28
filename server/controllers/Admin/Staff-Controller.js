@@ -136,7 +136,7 @@ const login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { staffId: staff._id, staffEmail: staff.staffEmail },
+      { staffId: staff._id, staffEmail: staff.staffEmail, staffRole: staff.staffRole },
       process.env.SECRET_KEY,
       { expiresIn: "1h" }
     );
