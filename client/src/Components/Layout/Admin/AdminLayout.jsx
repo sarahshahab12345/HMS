@@ -41,7 +41,7 @@ const AdminLayout = () => {
               </li>
               <li>
                 <button className="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded mr-2">
-                <Link to="/admin/login">Logout</Link>
+                <Link to="/auth/login">Logout</Link>
                 </button>
               </li>
             </ul>

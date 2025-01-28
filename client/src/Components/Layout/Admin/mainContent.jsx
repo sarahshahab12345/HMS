@@ -64,7 +64,7 @@ const MainContent = () => {
     case '/admin/food/add':
       content = <FoodCreatePage />;
       break;
-    case '/admin/login':
+    case '/auth/login':
       content = <LoginForm />;
       break;
     default:
