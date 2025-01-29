@@ -3,7 +3,7 @@ import MainContent from '../HouseKeeper/mainContent'
 import Sidebar from '../HouseKeeper/sidebar'
 import { useDispatch } from "react-redux";
 import { logout } from "../../../Slices/AdminAuthSlice.js"; 
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function HouseKeeperLayout() {
   const dispatch = useDispatch();
