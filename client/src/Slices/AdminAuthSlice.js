@@ -1,5 +1,5 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
 
 // Initial state
 const initialState = {
@@ -10,57 +10,65 @@ const initialState = {
 
 // Login Action (Async Thunk)
 export const login = createAsyncThunk(
-  'auth/login',
-  async (credentials, { dispatch, rejectWithValue }) => {
+  "auth/login",
+  async (credentials, { rejectWithValue }) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/admin/staff/login', credentials, {
-        withCredentials: true, 
-      });
+      const response = await axios.post(
+        "http://localhost:5000/api/admin/staff/login",
+        credentials,
+        { withCredentials: true }
+      );
 
-      dispatch(checkAuth()); // Dispatch checkAuth to validate the token immediately
+      console.log("Login Response:", response.data); // Debugging log
 
-      return {}; // No need to return token here, since it's handled by cookies
+      return response.data; // Return data so the component can access it
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Something went wrong');
+      return rejectWithValue(
+        error.response?.data?.message || "Something went wrong"
+      );
     }
   }
 );
 
 // Logout Action
-export const logout = createAsyncThunk('auth/logout', async (_, { rejectWithValue }) => {
-  try {
-    document.cookie = 'token=; Max-Age=-99999999;';
-    return {};
-  } catch (error) {
-    return rejectWithValue(error.response?.data?.message || 'Something went wrong');
-  }
-});
-
-// Check Auth Action
-export const checkAuth = createAsyncThunk(
-  'auth/checkAuth',
+export const logout = createAsyncThunk(
+  "auth/logout",
   async (_, { rejectWithValue }) => {
     try {
-      const token = document.cookie.split('; ').find(row => row.startsWith('authToken='))?.split('=')[1];
-
-      if (!token) {
-        return rejectWithValue('No token found');
-      }
-
-      const response = await axios.get('http://localhost:5000/api/admin/staff/checkAuth', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      return { staff: response.data.staff };
+      await axios.post(
+        "http://localhost:5000/api/admin/staff/logout",
+        {},
+        { withCredentials: true } // ✅ Ensure the backend clears the cookie
+      );
+      return {};
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Invalid token');
+      return rejectWithValue(error.response?.data?.message || "Something went wrong");
     }
   }
 );
 
+// Check Auth Action
+export const checkAuth = createAsyncThunk(
+  "auth/checkAuth",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/api/admin/staff/checkAuth",
+        { withCredentials: true } // ✅ Ensure cookies are sent
+      );
+
+      return response.data; // ✅ This ensures `fulfilled` receives the data
+
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Invalid token");
+    }
+  }
+);
+
+
 // Slice for Auth
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState,
   reducers: {
     setStaff(state, action) {

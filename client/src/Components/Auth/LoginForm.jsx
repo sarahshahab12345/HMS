@@ -1,40 +1,59 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { login, checkAuth } from '../../Slices/AdminAuthSlice.js'; 
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { login, checkAuth } from "../../Slices/AdminAuthSlice";
+import { useNavigate } from "react-router-dom";
 
 function LoginForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error } = useSelector((state) => state.auth); 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { loading, error } = useSelector((state) => state.auth);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  // Handle form submit
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const credentials = { staffEmail: email, staffPassword: password };
-
-    dispatch(login(credentials))
-    .unwrap()
-    .then(() => {
-      dispatch(checkAuth());
   
-      // Redirect to dashboard or home on successful login
-      navigate('/admin/dashboard'); 
-    })
-    .catch((error) => {
-      // Handle any errors from the login
-      console.error('Login failed:', error);
-    });
+    try {
+      const loginResponse = await dispatch(login({ staffEmail: email, staffPassword: password })).unwrap();
+      
+      console.log("Login successful:", loginResponse);
+  
+      // Wait for checkAuth() to fetch staff details
+      const authResponse = await dispatch(checkAuth()).unwrap();
+      
+      console.log("User details:", authResponse);
+  
+      if (authResponse?.staff?.staffRole) {
+        switch (authResponse.staff.staffRole) {
+          case "admin":
+            navigate("/admin/dashboard");
+            break;
+          case "receptionist":
+            navigate("/receptionist/dashboard");
+            break;
+          case "manager":
+            navigate("/manager/dashboard");
+            break;
+          case "housekeeper":
+            navigate("/housekeeper/dashboard");
+            break;
+          default:
+            navigate("/login");
+            break;
+        }
+      } else {
+        console.error("No staff role found, staying on login page");
+      }
+    } catch (err) {
+      console.error("Login failed:", err);
+    }
   };
-
-  return (
+  
+   return (
     <div className="flex items-center justify-center h-screen bg-gray-800">
       <div className="w-full max-w-sm bg-gray-900 p-8 rounded-lg shadow-lg">
         <h2 className="text-center text-2xl font-bold text-gray-200 mb-6">Login</h2>
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>} 
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
             <label className="block text-gray-200 text-sm font-medium mb-2">Email</label>
@@ -59,10 +78,10 @@ function LoginForm() {
           <div>
             <button
               type="submit"
-              disabled={loading} // Disable button while loading
+              disabled={loading}
               className="w-full bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-700 focus:outline-none"
             >
-              {loading ? 'Logging in...' : 'Login'}
+              {loading ? "Logging in..." : "Login"}
             </button>
           </div>
         </form>

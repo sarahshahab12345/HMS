@@ -140,12 +140,11 @@ const login = async (req, res) => {
       process.env.SECRET_KEY,
       { expiresIn: "1h" }
     );
-
-    console.log("Token generated:", token); // Added for debugging
+    console.log("Token generated:", token);    
 
     res.cookie("authToken", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production" ? true : false, // Ensure cookies are secure in production
+      secure: process.env.NODE_ENV === "production" ? true : false, 
       sameSite: "strict", // SameSite attribute
       maxAge: 3600000, // 1 hour in milliseconds
     });    
@@ -155,6 +154,7 @@ const login = async (req, res) => {
     res.status(200).json({
       success: true,
       message: "Login successful",
+      token,
     });
   } catch (error) {
     console.log("Error logging in:", error.message);
