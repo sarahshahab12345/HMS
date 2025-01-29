@@ -1,9 +1,19 @@
 import React from "react";
-import Sidebar from "../Admin/sidebar";
-import MainContent from "../Admin/mainContent";
-import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../../../Slices/AdminAuthSlice.js"; 
+import { Link, useNavigate } from "react-router-dom";
+import MainContent from "./mainContent.jsx";
+import Sidebar from "./sidebar.jsx";
 
 const AdminLayout = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await dispatch(logout()); 
+    navigate("/auth/login"); 
+  };
+
   return (
     <div className="flex">
       {/* Sidebar */}
@@ -40,8 +50,11 @@ const AdminLayout = () => {
                 </button>
               </li>
               <li>
-                <button className="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded mr-2">
-                <Link to="/auth/login">Logout</Link>
+                <button
+                  className="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded mr-2"
+                  onClick={handleLogout} 
+                >
+                  Logout
                 </button>
               </li>
             </ul>
