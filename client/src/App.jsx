@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import AdminLayout from "./Components/Layout/Admin/AdminLayout";
 import ReceptionistLayout from "./Components/Layout/Receptionist/ReceptionistLayout";
 import ManagerLayout from "./Components/Layout/Manager/ManagerLayout";
@@ -9,19 +14,19 @@ import CheckAuth from "./Common/checkAuth";
 
 // Import pages
 import AdminViewDashboard from "./Pages/admin-view/AdminViewDashboard";
-import AdminViewStaff from './Pages/admin-view/AdminViewStaff';
-import AdminViewGuest from './Pages/admin-view/AdminViewGuest';
-import AdminViewRoom from './Pages/admin-view/AdminViewRoom';
-import AdminViewFeedback from './Pages/admin-view/AdminViewFeedback';
-import AdminViewBilling from './Pages/admin-view/AdminViewBilling';
-import AdminViewInvoice from './Pages/admin-view/AdminViewInvoice';
-import StaffCreatePage from './Pages/admin-view/StaffCreatePage';
-import RoomCreatePage from './Pages/admin-view/RoomCreatePage';   
-import GuestCreatePage from './Pages/admin-view/GuestCreatePage';
-import BookingCreatePage from './Pages/admin-view/BookingCreatePage';
-import AdminViewBooking from './Pages/admin-view/AdminViewBooking';
-import AdminViewFood from './Pages/admin-view/AdminViewFood';
-import FoodCreatePage from './Pages/admin-view/FoodCreatePage';
+import AdminViewStaff from "./Pages/admin-view/AdminViewStaff";
+import AdminViewGuest from "./Pages/admin-view/AdminViewGuest";
+import AdminViewRoom from "./Pages/admin-view/AdminViewRoom";
+import AdminViewFeedback from "./Pages/admin-view/AdminViewFeedback";
+import AdminViewBilling from "./Pages/admin-view/AdminViewBilling";
+import AdminViewInvoice from "./Pages/admin-view/AdminViewInvoice";
+import StaffCreatePage from "./Pages/admin-view/StaffCreatePage";
+import RoomCreatePage from "./Pages/admin-view/RoomCreatePage";
+import GuestCreatePage from "./Pages/admin-view/GuestCreatePage";
+import BookingCreatePage from "./Pages/admin-view/BookingCreatePage";
+import AdminViewBooking from "./Pages/admin-view/AdminViewBooking";
+import AdminViewFood from "./Pages/admin-view/AdminViewFood";
+import FoodCreatePage from "./Pages/admin-view/FoodCreatePage";
 import ReceptionistViewDashboard from "./Pages/receptionist-view/ReceptionistViewDashboard";
 import ManagerViewDashboard from "./Pages/manager-view/ManagerViewDashboard";
 import HouseKeeperViewDashboard from "./Pages/houseKeeper-view/HouseKeeperViewDashboard";
@@ -35,15 +40,26 @@ import ManagerViewBookedRooms from "./Pages/manager-view/ManagerViewBookedRooms"
 import ManagerViewFood from "./Pages/manager-view/ManagerViewFood";
 import ManagerViewFeedback from "./Pages/manager-view/ManagerViewFeedback";
 import ManagerViewAnnouncement from "./Pages/manager-view/ManagerViewAnnouncement";
-import GuestCreatePageForManager from './Pages/manager-view/GuestCreatePage';
-import FoodCreatePageForManager from './Pages/manager-view/FoodCreatePage';
+import GuestCreatePageForManager from "./Pages/manager-view/GuestCreatePage";
+import FoodCreatePageForManager from "./Pages/manager-view/FoodCreatePage";
+import ReceptionistViewGuest from "./Pages/receptionist-view/ReceptionistViewGuest";
+import ReceptionistViewRooms from "./Pages/receptionist-view/ReceptionistViewRooms";
+import ReceptionistViewFood from "./Pages/receptionist-view/ReceptionistViewFood";
+import ReceptionistViewFeedback from "./Pages/receptionist-view/ReceptionistViewFeedback";
+import ReceptionistViewBookedRooms from "./Pages/receptionist-view/ReceptionistViewBookedRooms";
+import ReceptionistViewAnnouncement from "./Pages/receptionist-view/ReceptionistViewAnnouncement";
+import GuestCreatePageForReceptionist from "./Pages/receptionist-view/GuestCreatePage";
+import BookedRoomsCreatePageForReceptionist from "./Pages/receptionist-view/GuestCreatePage";
+import CreateFeedbackPage from "./Pages/receptionist-view/CreateFeedbackPage";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     // Check for token in cookies on page load
-    const token = document.cookie.split('; ').find(row => row.startsWith('token='));
+    const token = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("token="));
     if (token) {
       setIsAuthenticated(true); // User is authenticated
     }
@@ -55,13 +71,23 @@ function App() {
         {/* Default route */}
         <Route
           path="/"
-          element={isAuthenticated ? <Navigate to="/admin/dashboard" /> : <Navigate to="/auth/login" />}
+          element={
+            isAuthenticated ? (
+              <Navigate to="/admin/dashboard" />
+            ) : (
+              <Navigate to="/auth/login" />
+            )
+          }
         />
 
         {/* Admin routes */}
         <Route
           path="/admin"
-          element={<CheckAuth isAuthenticated={isAuthenticated}><AdminLayout /></CheckAuth>}
+          element={
+            <CheckAuth isAuthenticated={isAuthenticated}>
+              <AdminLayout />
+            </CheckAuth>
+          }
         >
           <Route index element={<Navigate to="dashboard" />} />
           <Route path="dashboard" element={<AdminViewDashboard />} />
@@ -85,16 +111,45 @@ function App() {
         {/* Receptionist routes */}
         <Route
           path="/receptionist"
-          element={<CheckAuth isAuthenticated={isAuthenticated}><ReceptionistLayout /></CheckAuth>}
+          element={
+            <CheckAuth isAuthenticated={isAuthenticated}>
+              <ReceptionistLayout />
+            </CheckAuth>
+          }
         >
           <Route index element={<Navigate to="dashboard" />} />
           <Route path="dashboard" element={<ReceptionistViewDashboard />} />
+          <Route path="guest" element={<ReceptionistViewGuest />} />
+          <Route path="rooms" element={<ReceptionistViewRooms />} />
+          <Route path="food" element={<ReceptionistViewFood />} />
+          <Route path="feedback" element={<ReceptionistViewFeedback />} />
+          <Route
+            path="booked-rooms"
+            element={<ReceptionistViewBookedRooms />}
+          />
+          <Route
+            path="announcement"
+            element={<ReceptionistViewAnnouncement />}
+          />
+          <Route
+            path="guest/add"
+            element={<GuestCreatePageForReceptionist />}
+          />
+          <Route
+            path="booked-rooms/add"
+            element={<BookedRoomsCreatePageForReceptionist />}
+          />
+          <Route path="feedback/add" element={<CreateFeedbackPage />} />
         </Route>
 
         {/* Manager routes */}
         <Route
           path="/manager"
-          element={<CheckAuth isAuthenticated={isAuthenticated}><ManagerLayout /></CheckAuth>}
+          element={
+            <CheckAuth isAuthenticated={isAuthenticated}>
+              <ManagerLayout />
+            </CheckAuth>
+          }
         >
           <Route index element={<Navigate to="dashboard" />} />
           <Route path="dashboard" element={<ManagerViewDashboard />} />
@@ -112,20 +167,34 @@ function App() {
         {/* Housekeeper routes */}
         <Route
           path="/housekeeper"
-          element={<CheckAuth isAuthenticated={isAuthenticated}><HousekeeperLayout /></CheckAuth>}
+          element={
+            <CheckAuth isAuthenticated={isAuthenticated}>
+              <HousekeeperLayout />
+            </CheckAuth>
+          }
         >
           <Route index element={<Navigate to="/dashboard" />} />
           <Route path="dashboard" element={<HouseKeeperViewDashboard />} />
           <Route path="rooms" element={<HouseKeeperViewRooms />} />
           <Route path="booked-rooms" element={<HouseKeeperViewBookedRooms />} />
-          <Route path="announcement" element={<HouseKeeperViewAnnouncement />} />
+          <Route
+            path="announcement"
+            element={<HouseKeeperViewAnnouncement />}
+          />
         </Route>
 
         {/* Login route */}
         <Route path="/auth/login" element={<LoginForm />} />
 
         {/* Catch-all route */}
-        <Route path="*" element={<Navigate to={isAuthenticated ? "/admin/dashboard" : "/auth/login"} />} />
+        <Route
+          path="*"
+          element={
+            <Navigate
+              to={isAuthenticated ? "/admin/dashboard" : "/auth/login"}
+            />
+          }
+        />
       </Routes>
     </Router>
   );
