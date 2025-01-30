@@ -7,6 +7,7 @@ import StaffRouter from "./Routes/Admin/Staff-Routes.js";
 import RoomRouter from "./Routes/Admin/Room-Routes.js";
 import BookingRouter from "./Routes/Admin/Booking-Routes.js";
 import FoodRouter from "./Routes/Admin/Food-Routes.js";
+import FeedbackRouter from "./Routes/Admin/Feedback-Routes.js";
 import uploadImageRouter from "./Routes/Admin/image-upload-Routes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -41,6 +42,7 @@ app.use("/api/admin/staff", StaffRouter);
 app.use("/api/admin/room", RoomRouter);
 app.use("/api/admin/booking", BookingRouter);
 app.use("/api/admin/food", FoodRouter);
+app.use("/api/admin/feedback", FeedbackRouter);
 app.use("/api/img", uploadImageRouter);
 
 // Start server

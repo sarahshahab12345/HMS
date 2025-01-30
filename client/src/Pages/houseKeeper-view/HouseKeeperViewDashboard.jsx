@@ -7,12 +7,12 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 const HouseKeeperViewDashboard = () => {
   const chartData = {
-    labels: ["Rooms Cleaned", "Laundry", "Requests", "Complaints"],
+    labels: ["Rooms", "Booked Rooms", "Announcements"], // Updated labels
     datasets: [
       {
         label: "Housekeeping Overview",
-        data: [25, 15, 7, 3], 
-        backgroundColor: ["#34D399", "#10B981", "#6EE7B7", "#34D399"],
+        data: [25, 15, 7], // Updated data to match card values
+        backgroundColor: ["#34D399", "#10B981", "#6EE7B7"], // Colors to represent each section
       },
     ],
   };
@@ -25,18 +25,10 @@ const HouseKeeperViewDashboard = () => {
         </h1>
 
         {/* First Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-6 w-full max-w-4xl">
-          <Card title="Rooms Cleaned" count="25" color="text-green-600" />
-          <Card title="Laundry" count="15" color="text-green-600" />
-          <Card title="Requests" count="7" color="text-green-600" />
-          <Card title="Complaints" count="3" color="text-green-600" />
-        </div>
-
-        {/* Second Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-4xl mt-6">
-          <Card title="Supplies" count="5" color="text-green-600" />
-          <Card title="Staff Meetings" count="2" color="text-green-600" />
-          <Card title="Reports" count="1" color="text-green-600" />
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 w-full max-w-4xl">
+          <Card title="Rooms" count="25" color="text-green-600" />
+          <Card title="Booked Rooms" count="15" color="text-green-600" />
+          <Card title="Announcements" count="7" color="text-green-600" />
         </div>
 
         {/* Chart Section */}

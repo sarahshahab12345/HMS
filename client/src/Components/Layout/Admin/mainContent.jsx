@@ -7,7 +7,6 @@ import AdminViewGuest from '../../../Pages/admin-view/AdminViewGuest';
 import AdminViewRoom from '../../../Pages/admin-view/AdminViewRoom';
 import AdminViewFeedback from '../../../Pages/admin-view/AdminViewFeedback';
 import AdminViewBilling from '../../../Pages/admin-view/AdminViewBilling';
-import AdminViewInvoice from '../../../Pages/admin-view/AdminViewInvoice';
 import StaffCreatePage from '../../../Pages/admin-view/StaffCreatePage';
 import RoomCreatePage from '../../../Pages/admin-view/RoomCreatePage';   
 import LoginForm from '../../Auth/LoginForm';
@@ -45,9 +44,6 @@ const MainContent = () => {
       break;
     case '/admin/billing':
       content = <AdminViewBilling />;
-      break;
-    case '/admin/invoice':
-      content = <AdminViewInvoice />;
       break;
     case '/admin/staff/add':
       content = <StaffCreatePage />;
