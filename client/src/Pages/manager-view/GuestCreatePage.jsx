@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createGuest } from "../../Slices/guestSlice.js";
 import { uploadImage } from "../../Slices/image-uploadSlice.js";
+import { useNavigate } from "react-router-dom";
 
 function GuestCreatePage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     guestId: "",
     guestName: "",
@@ -42,6 +44,7 @@ function GuestCreatePage() {
     e.preventDefault();
     const newFormData = { ...formData, guestId: "generated_server_side_id" };
     dispatch(createGuest(newFormData));
+    navigate("/manager/guest");
     setFormData({
       guestId: "",
       guestName: "",

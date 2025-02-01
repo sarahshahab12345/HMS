@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { addFoodItem } from "../../Slices/foodSlice.js"; 
 import { uploadImage } from "../../Slices/image-uploadSlice.js"; 
+import { useNavigate } from "react-router-dom";
 
 function FoodCreatePage() {
   const dispatch = useDispatch();
-
+  const navigate = useNavigate();
   const generateFoodId = () => {
     const randomNumber = Math.floor(100 + Math.random() * 900);
     return `F${randomNumber}`; // Prefix 'F' for food ID
@@ -46,6 +47,7 @@ function FoodCreatePage() {
     const foodId = generateFoodId(); // Generate the food ID
     const newFormData = { ...formData, foodId }; // Add the generated ID to form data
     dispatch(addFoodItem(newFormData));
+    navigate("/manager/food");
     setFormData({
       foodId: "",
       foodName: "",

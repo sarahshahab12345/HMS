@@ -5,6 +5,7 @@ import roomReducer from '../Slices/roomSlice';
 import bookingReducer from '../Slices/bookingSlice';
 import foodReducer from '../Slices/foodSlice';
 import feedbackReducer from '../Slices/feedbackSlice'; 
+import billingReducer from '../Slices/billingSlice'; 
 import authReducer from '../Slices/AdminAuthSlice'; 
 
 const store = configureStore({
@@ -15,6 +16,7 @@ const store = configureStore({
     booking: bookingReducer,
     food: foodReducer,
     feedback: feedbackReducer,  
+    billing: billingReducer,  
     auth: authReducer,  
   },
 });

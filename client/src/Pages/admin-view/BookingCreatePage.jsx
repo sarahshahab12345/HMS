@@ -3,9 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { createBooking } from "../../Slices/bookingSlice";
 import { getAllGuests } from "../../Slices/guestSlice";
 import { getAllRooms } from "../../Slices/roomSlice";
+import { useNavigate } from "react-router-dom";
 
 function BookingCreatePage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { guests } = useSelector((state) => state.guests);
   const { rooms, isLoading: roomsLoading } = useSelector((state) => state.room); // Correctly access `rooms` (plural)
   const [formData, setFormData] = useState({
@@ -59,7 +61,7 @@ function BookingCreatePage() {
 
     // Dispatch the action to create the booking
     dispatch(createBooking(newFormData));
-
+    navigate("/admin/booking");
     // Reset form data
     setFormData({
       guestId: "",

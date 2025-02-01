@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createStaff } from "../../Slices/staffSlice.js";
 import { uploadImage } from "../../Slices/image-uploadSlice.js"; 
+import { useNavigate } from "react-router-dom";
 
 function StaffCreatePage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     staffId: "",
     staffName: "",
@@ -45,6 +47,7 @@ function StaffCreatePage() {
     // Prepare the data to be sent
     const newFormData = { ...formData, staffId: "generated_server_side_id" }; 
     dispatch(createStaff(newFormData));
+    navigate("/admin/staff");
     setFormData({
       staffId: "",
       staffName: "",

@@ -1,77 +1,141 @@
-import React from 'react';
-
-const billingData = [
-  {
-    invoiceId: "INV001",
-    customerName: "Emma Watson",
-    customerEmail: "emma.watson@example.com",
-    billingDate: "2024-01-14",
-    dueDate: "2024-02-14",
-    totalAmount: 500.00,
-    paymentStatus: "Unpaid",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoiceId: "INV002",
-    customerName: "Robert Brown",
-    customerEmail: "robert.brown@example.com",
-    billingDate: "2024-01-10",
-    dueDate: "2024-02-10",
-    totalAmount: 1200.00,
-    paymentStatus: "Paid",
-    paymentMethod: "Bank Transfer",
-  },
-];
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllBillings, updateBilling } from "../../Slices/billingSlice.js";
+import { AiOutlineEdit, AiOutlineFile } from "react-icons/ai";
+import BillingDetailsDialog from "./Details/BillingDetailsDialog.jsx";
+import UpdateBillingDialog from "./UpdateDetails/UpdateBillingDialog.jsx";
 
 const AdminViewBilling = () => {
+  const dispatch = useDispatch();
+  const { billingRecords = [], isLoading, error } = useSelector((state) => state.billing);
+
+  useEffect(() => {
+    dispatch(getAllBillings());
+  }, [dispatch]);
+  
+  useEffect(() => {
+    console.log(billingRecords); 
+  }, [billingRecords]);  
+
+  const [selectedBilling, setSelectedBilling] = useState(null);
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
+  const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
+
+  const handleOpenDetailsDialog = (billing) => {
+    setSelectedBilling(billing);
+    setDetailsDialogOpen(true);
+  };
+
+  const handleCloseDetailsDialog = () => {
+    setSelectedBilling(null);
+    setDetailsDialogOpen(false);
+  };
+
+  const handleOpenUpdateDialog = (billing) => {
+    setSelectedBilling(billing);
+    setUpdateDialogOpen(true);
+  };
+
+  const handleCloseUpdateDialog = () => {
+    setSelectedBilling(null);
+    setUpdateDialogOpen(false);
+  };
+
+  const handleUpdate = (updatedBilling) => {
+    if (updatedBilling && updatedBilling._id) {
+      const { _id: id, ...formData } = updatedBilling;
+      dispatch(updateBilling({ id, formData }))
+        .unwrap()
+        .then(() => {
+          console.log("Billing record updated successfully!");
+          dispatch(getAllBillings());
+        })
+        .catch((error) => {
+          console.error("Failed to update billing record:", error);
+        });
+    } else {
+      console.error("Invalid billing data. Cannot update.");
+    }
+  };
+
   return (
-    <>
-      <div className="p-4 sm:ml-64">
-        <div className="flex flex-col items-center">
-          {/* Heading before the table */}
-          <h2 className="italic text-center text-2xl mb-4 text-gray-700">
-            Billing Management
-          </h2>
-          
-          <div className="overflow-x-auto">
+    <div className="p-4 sm:ml-64">
+      <div className="flex flex-col items-center">
+        <h2 className="italic text-center text-2xl mb-4 text-gray-700">
+          Billing Management
+        </h2>
+
+        <div className="overflow-x-auto">
+          {isLoading ? (
+            <p>Loading billing records...</p>
+          ) : error ? (
+            <p className="text-red-500">{error}</p>
+          ) : billingRecords.length > 0 ? (
             <table className="min-w-full bg-white border border-gray-300 rounded-md shadow-md">
               <thead className="bg-gray-200">
                 <tr>
-                  <th className="p-4 border border-gray-300">Invoice ID</th>
-                  <th className="p-4 border border-gray-300">Customer Name</th>
-                  <th className="p-4 border border-gray-300">Email</th>
-                  <th className="p-4 border border-gray-300">Billing Date</th>
-                  <th className="p-4 border border-gray-300">Due Date</th>
-                  <th className="p-4 border border-gray-300">Total Amount</th>
+                  <th className="p-4 border border-gray-300">Guest ID</th>
+                  <th className="p-4 border border-gray-300">Booking ID</th>
                   <th className="p-4 border border-gray-300">Payment Status</th>
-                  <th className="p-4 border border-gray-300">Payment Method</th>
+                  <th className="p-4 border border-gray-300">Total Amount</th>
                   <th className="p-4 border border-gray-300">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {billingData.map((billing, index) => (
-                  <tr key={billing.invoiceId} className={`bg-white ${index % 2 === 0 ? 'bg-gray-50' : 'bg-gray-100'}`}>
-                    <td className="p-4 border border-gray-300">{billing.invoiceId}</td>
-                    <td className="p-4 border border-gray-300">{billing.customerName}</td>
-                    <td className="p-4 border border-gray-300">{billing.customerEmail}</td>
-                    <td className="p-4 border border-gray-300">{new Date(billing.billingDate).toLocaleDateString()}</td>
-                    <td className="p-4 border border-gray-300">{new Date(billing.dueDate).toLocaleDateString()}</td>
-                    <td className="p-4 border border-gray-300">${billing.totalAmount}</td>
+                {billingRecords.map((billing, index) => (
+                  <tr
+                    key={billing._id}
+                    className={`bg-white ${
+                      index % 2 === 0 ? "bg-gray-50" : "bg-gray-100"
+                    }`}
+                  >
+                    <td className="p-4 border border-gray-300">{billing.guestId}</td>
+                    <td className="p-4 border border-gray-300">{billing.bookingId}</td>
                     <td className="p-4 border border-gray-300">{billing.paymentStatus}</td>
-                    <td className="p-4 border border-gray-300">{billing.paymentMethod}</td>
+                    <td className="p-4 border border-gray-300">{billing.totalAmount}</td>
                     <td className="p-4 border border-gray-300 flex space-x-2">
-                      <button className="bg-green-500 text-white px-2 py-1 rounded">View</button>
-                      <button className="bg-yellow-500 text-white px-2 py-1 rounded">Download</button>
-                      <button className="bg-red-500 text-white px-2 py-1 rounded">Delete</button>
+                      <button
+                        className="flex items-center text-blue-500 px-1 border-2 border-blue-500 py-1 rounded hover:bg-blue-500 hover:text-white"
+                        onClick={() => handleOpenUpdateDialog(billing)}
+                      >
+                        <AiOutlineEdit className="mr-1" />
+                      </button>
+                      <button
+                        className="flex items-center text-green-500 border-2 border-green-500 px-1 py-1 rounded hover:bg-green-500 hover:text-white"
+                        onClick={() => handleOpenDetailsDialog(billing)}
+                      >
+                        <AiOutlineFile className="mr-1" />
+                      </button>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          </div>
+          ) : (
+            <p className="text-gray-500">No billing records available.</p>
+          )}
         </div>
       </div>
-    </>
+
+      {/* Details Dialog */}
+      {selectedBilling && (
+        <BillingDetailsDialog
+          open={detailsDialogOpen}
+          billing={selectedBilling}
+          onClose={handleCloseDetailsDialog}
+        />
+      )}
+
+      {/* Update Dialog */}
+      {selectedBilling && (
+        <UpdateBillingDialog
+          open={updateDialogOpen}
+          billing={selectedBilling}
+          onClose={handleCloseUpdateDialog}
+          onUpdate={handleUpdate}
+        />
+      )}
+    </div>
   );
 };
 

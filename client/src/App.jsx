@@ -50,6 +50,7 @@ import ReceptionistViewAnnouncement from "./Pages/receptionist-view/Receptionist
 import GuestCreatePageForReceptionist from "./Pages/receptionist-view/GuestCreatePage";
 import BookedRoomsCreatePageForReceptionist from "./Pages/receptionist-view/GuestCreatePage";
 import CreateFeedbackPage from "./Pages/receptionist-view/CreateFeedbackPage";
+import AdminViewAnnouncement from "./Pages/admin-view/AdminViewAnnouncement";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -97,6 +98,7 @@ function App() {
           <Route path="food" element={<AdminViewFood />} />
           <Route path="feedback" element={<AdminViewFeedback />} />
           <Route path="billing" element={<AdminViewBilling />} />
+          <Route path="announcement" element={<AdminViewAnnouncement />} />
           <Route path="staff/add" element={<StaffCreatePage />} />
           <Route path="guest/add" element={<GuestCreatePage />} />
           <Route path="room/add" element={<RoomCreatePage />} />

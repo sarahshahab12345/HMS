@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { createRoom } from "../../Slices/roomSlice.js";
 import { uploadImage } from "../../Slices/image-uploadSlice.js";
+import { useNavigate } from "react-router-dom";
 
 function RoomCreatePage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     roomId: "",
     roomNo: "",
@@ -42,6 +44,7 @@ function RoomCreatePage() {
     // Prepare the data to be sent
     const newFormData = { ...formData, roomId: "generated_server_side_id" }; 
     dispatch(createRoom(newFormData));
+    navigate("/admin/room");
     setFormData({
       roomId: "",
       roomNo: "",
